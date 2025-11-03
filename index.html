@@ -1420,38 +1420,70 @@
             });
         });
 
-        // Skills Animation
-        const skillsSection = document.querySelector('.skills');
-        const progressLines = document.querySelectorAll('.Technical-bars .progress-line');
-        let loopInterval = 11;
+// === SKILL PROGRESS BAR LOOP (7 SECONDS) ===
+const skillsSection = document.querySelector('.skills');
+const progressBars = document.querySelectorAll('.Technical-bars .bar');
 
-        const startLoop = () => {
-          if (loopInterval) return;
-          loopInterval = setInterval(() => {
-            progressLines.forEach(line => {
-              const span = line.querySelector('span');
-              span.style.transform = 'scaleX(0)';
-              span.style.opacity = '0';
-              void span.offsetWidth;
-              span.style.transition = 'none';
-              void span.offsetWidth;
-              span.style.transition = 'transform 1s cubic-bezier(1,0,0.5,1) 1s, opacity .5s 1.5s';
-              span.style.transform = 'scaleX(1)';
-              span.style.opacity = '1';
-            });
-          }, 2000);
-        };
+let loopTimeout = null;
 
-        const stopLoop = () => {
-          if (loopInterval) clearInterval(loopInterval);
-          loopInterval = null;
-        };
+const animateSkills = () => {
+  progressBars.forEach(bar => {
+    const line = bar.querySelector('.progress-line');
+    const span = line.querySelector('span');
 
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => entry.isIntersecting ? startLoop() : stopLoop());
-        }, { threshold: 0.3 });
-        observer.observe(skillsSection);
+    // Reset
+    span.style.transition = 'none';
+    span.style.transform = 'scaleX(0)';
+    span.style.opacity = '0';
+    span.offsetHeight; // Trigger reflow
+
+    // Re-enable transition
+    span.style.transition = 'transform 1.2s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.5s 0.8s';
+
+    // Trigger animation
+    requestAnimationFrame(() => {
+      line.classList.add('animate-progress');
+    });
+  });
+
+  // LOOP EVERY 7 SECONDS
+  loopTimeout = setTimeout(animateSkills, 7000);
+};
+
+const startSkillLoop = () => {
+  if (loopTimeout) return;
+  animateSkills();
+};
+
+const stopSkillLoop = () => {
+  if (loopTimeout) clearTimeout(loopTimeout);
+  loopTimeout = null;
+};
+
+// Observe when skills section is in view
+const skillsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      startSkillLoop();
+    } else {
+      stopSkillLoop();
+      // Reset on leave
+      progressBars.forEach(bar => {
+        const line = bar.querySelector('.progress-line');
+        line.classList.remove('animate-progress');
       });
+    }
+  });
+}, { threshold: 0.4 });
+
+skillsObserver.observe(skillsSection);
+
+// Cleanup
+window.addEventListener('beforeunload', () => {
+  skillsObserver.disconnect();
+  stopSkillLoop();
+});
+
     </script>
   </body>
 
