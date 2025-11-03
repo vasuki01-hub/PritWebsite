@@ -1421,7 +1421,6 @@
         });
 
 // === SKILL PROGRESS BAR LOOP (7 SECONDS) ===
-const skillsSection = document.querySelector('.skills');
 const progressBars = document.querySelectorAll('.Technical-bars .bar');
 
 let loopTimeout = null;
@@ -1484,6 +1483,38 @@ window.addEventListener('beforeunload', () => {
   stopSkillLoop();
 });
 
+        // Skills Animation
+        const skillsSection = document.querySelector('.skills');
+        const progressLines = document.querySelectorAll('.Technical-bars .progress-line');
+        let loopInterval = 11;
+
+        const startLoop = () => {
+          if (loopInterval) return;
+          loopInterval = setInterval(() => {
+            progressLines.forEach(line => {
+              const span = line.querySelector('span');
+              span.style.transform = 'scaleX(0)';
+              span.style.opacity = '0';
+              void span.offsetWidth;
+              span.style.transition = 'none';
+              void span.offsetWidth;
+              span.style.transition = 'transform 1s cubic-bezier(1,0,0.5,1) 1s, opacity .5s 1.5s';
+              span.style.transform = 'scaleX(1)';
+              span.style.opacity = '1';
+            });
+          }, 7000);
+        };
+
+        const stopLoop = () => {
+          if (loopInterval) clearInterval(loopInterval);
+          loopInterval = null;
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => entry.isIntersecting ? startLoop() : stopLoop());
+        }, { threshold: 0.3 });
+        observer.observe(skillsSection);
+      });
     </script>
   </body>
 
