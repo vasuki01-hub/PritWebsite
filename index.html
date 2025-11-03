@@ -5,22 +5,20 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description"
-      content="Prit Ghodasara - Full Stack Developer specializing in Web, iOS, Android, and Cross-Platform App Development." />
+    <meta name="description" content="Prit Ghodasara - Full Stack Developer | Web, iOS, Android, Flutter, React" />
     <meta name="keywords"
-      content="full stack developer, web developer, iOS developer, android developer, flutter, react, portfolio" />
+      content="portfolio, full stack developer, web developer, mobile app, flutter, react, iOS, android" />
     <meta name="author" content="Prit Ghodasara" />
     <meta name="theme-color" content="#07e6da" />
     <meta property="og:title" content="Prit Ghodasara | Full Stack Developer" />
-    <meta property="og:description"
-      content="Passionate developer crafting intuitive, high-performance web and mobile apps." />
+    <meta property="og:description" content="Passionate developer building high-performance web and mobile apps." />
     <meta property="og:image" content="PG.jpg" />
     <meta property="og:url" content="https://yourdomain.com" />
     <meta name="twitter:card" content="summary_large_image" />
 
     <title>Prit Ghodasara | Full Stack Developer</title>
 
-    <!-- Preload Critical Resources -->
+    <!-- Preload Critical -->
     <link rel="preload" href="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js" as="script" />
     <link rel="preload" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" as="style" />
 
@@ -31,9 +29,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet" />
 
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
     <style>
       /* ============================================= */
-      /* MINIFIED & OPTIMIZED CSS (Preserved Logic) */
+      /* GLOBAL & THEME VARIABLES */
       /* ============================================= */
       *,
       *::before,
@@ -54,7 +55,8 @@
         min-height: 100vh;
         position: relative;
         overflow-x: hidden;
-        line-height: 1.6
+        line-height: 1.6;
+        transition: background .5s ease
       }
 
       body::before {
@@ -63,7 +65,8 @@
         inset: 0;
         background: rgba(0, 0, 0, .6);
         z-index: -1;
-        pointer-events: none
+        pointer-events: none;
+        transition: opacity .5s ease
       }
 
       h1,
@@ -97,7 +100,87 @@
       img {
         max-width: 100%;
         height: auto;
-        display: block
+        display: block;
+        loading: lazy
+      }
+
+      /* Light Mode */
+      body.light {
+        background: #f8f9fa url('Bg03-light.jpg') center/cover no-repeat fixed
+      }
+
+      body.light::before {
+        background: rgba(255, 255, 255, .7)
+      }
+
+      body.light .header {
+        background: rgba(255, 255, 255, .1);
+        border-bottom: 1px solid rgba(0, 0, 0, .1)
+      }
+
+      body.light .navbar a {
+        color: #333
+      }
+
+      body.light .navbar a.active {
+        color: #07e6da
+      }
+
+      body.light .navbar a:hover::before {
+        background: rgba(7, 247, 235, .2)
+      }
+
+      body.light .home-content,
+      body.light .about-text,
+      body.light .services,
+      body.light .skills,
+      body.light .portfolio,
+      body.light .contact {
+        color: #333
+      }
+
+      body.light .sub-title,
+      body.light .heading1 {
+        color: #222
+      }
+
+      body.light .services-list>div {
+        background: rgba(0, 0, 0, .05);
+        border-color: rgba(146, 13, 246, .2)
+      }
+
+      body.light .services-list>div:hover {
+        background: rgba(146, 13, 246, .1);
+        border-color: #920df6
+      }
+
+      body.light .read {
+        background: #5e35b1;
+        color: #fff
+      }
+
+      body.light .Technical-bars .bar .progress-line {
+        background: #ddd
+      }
+
+      body.light .progress-line span::after,
+      body.light .progress-line span::before {
+        background: #fff;
+        border-top-color: #fff
+      }
+
+      body.light .input-box input,
+      body.light .contact-form textarea {
+        background: rgba(0, 0, 0, .1);
+        color: #333
+      }
+
+      body.light .contact-btn {
+        background: #5e35b1
+      }
+
+      body.light .contact-btn:hover {
+        background: #4527a0
       }
 
       /* Header */
@@ -111,16 +194,16 @@
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border-bottom: 1px solid rgba(255, 255, 255, .1);
-        z-index: 100;
+        z-index: 1000;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        transition: transform .6s cubic-bezier(.25, .8, .25, 1);
-        transform: translateX(-100%)
+        transition: all .4s ease;
+        transform: translateY(-100%)
       }
 
-      .header.slide-in {
-        transform: translateX(0)
+      .header.show {
+        transform: translateY(0)
       }
 
       .logo {
@@ -128,7 +211,7 @@
         font-weight: 700;
         color: #fff;
         opacity: 0;
-        animation: slideRight 1s ease forwards
+        animation: fadeIn .8s ease forwards .3s
       }
 
       .navbar {
@@ -145,8 +228,8 @@
         border-radius: 50px;
         overflow: hidden;
         opacity: 0;
-        animation: slideTop .5s ease forwards;
-        animation-delay: calc(.2s * var(--i))
+        animation: fadeIn .6s ease forwards;
+        animation-delay: calc(.1s * var(--i))
       }
 
       .navbar a::before {
@@ -174,6 +257,66 @@
         font-weight: 600
       }
 
+      /* Hamburger */
+      .hamburger {
+        display: none;
+        cursor: pointer;
+        z-index: 1001
+      }
+
+      .hamburger span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        background: #fff;
+        margin: 5px auto;
+        transition: all .3s ease;
+        border-radius: 2px
+      }
+
+      .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px)
+      }
+
+      .hamburger.active span:nth-child(2) {
+        opacity: 0
+      }
+
+      .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px)
+      }
+
+      /* Mobile Menu */
+      @media(max-width:992px) {
+        .navbar {
+          position: fixed;
+          top: 0;
+          right: -100%;
+          width: 80%;
+          height: 100vh;
+          background: rgba(0, 0, 0, .95);
+          backdrop-filter: blur(20px);
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 2rem;
+          transition: right .4s ease;
+          z-index: 999
+        }
+
+        .navbar.active {
+          right: 0
+        }
+
+        .hamburger {
+          display: block
+        }
+
+        .header {
+          padding: 1.2rem 5%
+        }
+      }
+
       /* Home */
       .home {
         min-height: 100vh;
@@ -196,19 +339,19 @@
       .home-content h3 {
         font-size: 2rem;
         opacity: 0;
-        animation: slideBottom 1s ease forwards .7s
+        animation: slideUp 1s ease forwards .7s
       }
 
       .home-content h3:nth-of-type(2) {
         margin-bottom: 1.8rem;
-        animation: slideTop 1s ease forwards .7s
+        animation: slideUp 1s ease forwards .9s
       }
 
       .home-content h1 {
         font-size: 3.2rem;
         margin: .2rem 0;
         opacity: 0;
-        animation: slideRight 1s ease forwards 1s
+        animation: slideUp 1s ease forwards 1.1s
       }
 
       .home-content span {
@@ -218,7 +361,7 @@
       .home-content p {
         font-size: 1rem;
         opacity: 0;
-        animation: slideRight 1s ease forwards 1.2s;
+        animation: slideUp 1s ease forwards 1.3s;
         margin: 1.2rem 0
       }
 
@@ -240,8 +383,8 @@
         font-size: 1.25rem;
         color: #07e6da;
         opacity: 0;
-        animation: slideLeft 1s ease forwards;
-        animation-delay: calc(.2s * var(--i));
+        animation: fadeIn 1s ease forwards;
+        animation-delay: calc(.1s * var(--i));
         transition: transform .3s, background .3s, color .3s
       }
 
@@ -262,7 +405,7 @@
         letter-spacing: 1px;
         font-weight: 600;
         opacity: 0;
-        animation: slideRight 1s ease forwards 2s;
+        animation: slideUp 1s ease forwards 2s;
         box-shadow: 0 0 10px #07e6da, 0 0 25px #4101f0;
         transition: transform .3s, box-shadow .3s
       }
@@ -287,20 +430,13 @@
         margin: 1.2rem auto
       }
 
-      .profile-photo img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        loading: lazy
-      }
-
       .profile-photo:hover {
         animation: pulse 1.2s ease-in-out infinite;
         box-shadow: 0 0 40px rgba(99, 7, 247, .9), 0 0 60px rgba(0, 222, 252, .8);
         transform: scale(1.05)
       }
 
-      /* About */
+      /* About, Services, Skills, Portfolio, Contact */
       .about {
         min-height: 100vh;
         display: flex;
@@ -353,7 +489,6 @@
         transform: translateY(-5px)
       }
 
-      /* Services */
       .services {
         padding: 6rem 5%;
         text-align: center;
@@ -423,7 +558,7 @@
         font-weight: 600;
         letter-spacing: 1px;
         opacity: 0;
-        animation: slideTop 1s ease forwards 1.8s;
+        animation: fadeIn 1s ease forwards 1.8s;
         box-shadow: 0 0 5px #07e6da, 0 0 25px #4101f0;
         transition: .3s
       }
@@ -432,7 +567,6 @@
         box-shadow: 0 0 25px #07e6da, 0 0 33px #07e6da
       }
 
-      /* Skills */
       .skills {
         padding: 7.5rem 5%;
         background: rgba(0, 0, 0, .8);
@@ -482,7 +616,7 @@
         font-size: 1.1rem;
         font-weight: 500;
         opacity: 0;
-        animation: showText .5s 1s linear forwards
+        animation: fadeIn .5s 1s linear forwards
       }
 
       .Technical-bars .bar .progress-line {
@@ -502,7 +636,7 @@
         border-radius: 10px;
         transform: scaleX(0);
         transform-origin: left;
-        animation: animate 1s 1s cubic-bezier(1, 0, .5, 1) forwards
+        animation: animate 1s 2s cubic-bezier(1, 0, .5, 1) forwards
       }
 
       .progress-line.html span {
@@ -544,7 +678,7 @@
         font-size: 12px;
         border-radius: 3px;
         opacity: 0;
-        animation: showText .5s 1.5s linear forwards
+        animation: fadeIn .5s 1.5s linear forwards
       }
 
       .progress-line span::before {
@@ -555,7 +689,7 @@
         border: 6px solid transparent;
         border-top-color: #000;
         opacity: 0;
-        animation: showText .5s 1.5s linear forwards
+        animation: fadeIn .5s 1.5s linear forwards
       }
 
       .radial-bars {
@@ -598,19 +732,19 @@
       }
 
       .path-1 {
-        animation: animate-path1 2s 5s linear forwards
+        animation: animate-path1 2s 1s linear forwards
       }
 
       .path-2 {
-        animation: animate-path2 2s 5s linear forwards
+        animation: animate-path2 2s 1s linear forwards
       }
 
       .path-3 {
-        animation: animate-path3 2s 5s linear forwards
+        animation: animate-path3 2s 1s linear forwards
       }
 
       .path-4 {
-        animation: animate-path4 2s 5s linear forwards
+        animation: animate-path4 2s 1s linear forwards
       }
 
       @keyframes animate-bar {
@@ -650,8 +784,8 @@
         transform: translate(-50%, -50%);
         font-size: 1.25rem;
         font-weight: 600;
-        opacity: 0;
-        animation: showText .5s 1s linear forwards
+        opacity: 1;
+        animation: fadeIn 1.5s 2s linear forwards
       }
 
       .radial-bar .text {
@@ -662,14 +796,13 @@
         font-size: .8rem;
         font-weight: 500;
         opacity: 0;
-        animation: showText .5s 1s linear forwards
+        animation: fadeIn .5s 1s linear forwards
       }
 
-      /* Portfolio */
       .portfolio {
         padding: 7.5rem 5%;
         background: url(Bg03.jpg) center/cover no-repeat;
-        backdrop-filter: blur(7px);
+        backdrop-filter: blur(10px);
         text-align: center
       }
 
@@ -685,21 +818,20 @@
         overflow: hidden;
         border-radius: 16px;
         box-shadow: 0 8px 20px rgba(0, 0, 0, .3);
-        transition: .2s
+        transition: .4s
       }
 
       .row img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        loading: lazy;
-        transition: .2s
+        transition: .4s
       }
 
       .row .layer {
         position: absolute;
         inset: 0;
-        background: linear-gradient(transparent, #07e6da, #5f0df6, #5f0df6,  rgba(0, 0, 0, .9));
+        background: linear-gradient(transparent, #07e6da, #5507e6, #5507e6, rgba(0, 0, 0, .9));
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
@@ -719,8 +851,8 @@
       }
 
       .layer p {
-        font-size: .7rem;
-        margin-bottom: 0.5rem;
+        font-size: .8rem;
+        margin-bottom: 1rem;
         line-height: 1.5
       }
 
@@ -729,7 +861,6 @@
         font-size: 1.5rem
       }
 
-      /* Contact */
       .contact {
         padding: 7.5rem 5%;
         background: url(Bg02.jpg) center/cover no-repeat;
@@ -781,13 +912,14 @@
         border-radius: 40px;
         font-weight: 600;
         cursor: pointer;
-        transition: .3s
+        transition: .3s;
+        margin-top: 1rem
       }
 
       .contact-btn:hover {
         background: #a07ee0;
         transform: translateY(-3px);
-        box-shadow: 0 0 20px #b907e6,  0 0 40px #b907e6
+        box-shadow: 0 0 20px #b907e6
       }
 
       .contact-info {
@@ -804,34 +936,36 @@
         margin-bottom: .5rem
       }
 
+      /* Theme Toggle */
+      .theme-toggle {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 1000;
+        background: #07e6da;
+        color: #000;
+        padding: .8rem;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: 0 0 20px rgba(7, 247, 235, .5);
+        transition: all .3s ease
+      }
+
+      .theme-toggle:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 30px rgba(7, 247, 235, .8)
+      }
+
       /* Animations */
-      @keyframes slideRight {
+      @keyframes slideUp {
         0% {
-          transform: translateX(-100px);
-          opacity: 0
-        }
-
-        100% {
-          transform: translateX(0);
-          opacity: 1
-        }
-      }
-
-      @keyframes slideLeft {
-        0% {
-          transform: translateX(100px);
-          opacity: 0
-        }
-
-        100% {
-          transform: translateX(0);
-          opacity: 1
-        }
-      }
-
-      @keyframes slideTop {
-        0% {
-          transform: translateY(100px);
+          transform: translateY(50px);
           opacity: 0
         }
 
@@ -841,14 +975,12 @@
         }
       }
 
-      @keyframes slideBottom {
+      @keyframes fadeIn {
         0% {
-          transform: translateY(-100px);
           opacity: 0
         }
 
         100% {
-          transform: translateY(0);
           opacity: 1
         }
       }
@@ -885,31 +1017,15 @@
         }
       }
 
-      @keyframes showText {
-        100% {
-          opacity: 1
-        }
-      }
-
       /* Responsive */
       @media(max-width:992px) {
         .header {
-          padding: 1.2rem 3%;
-          transform: translateX(-100%)
-        }
-
-        .navbar {
-          gap: 1.2rem
-        }
-
-        .navbar a {
-          font-size: 1.1rem;
-          padding: .4rem .8rem
+          padding: 1.2rem 5%
         }
 
         .home,
         .about {
-          padding: 5rem 3% 4rem
+          padding: 5rem 5% 4rem
         }
 
         .home-content h1 {
@@ -935,22 +1051,10 @@
       }
 
       @media(max-width:600px) {
-        .header {
-          padding: 1rem 3%
-        }
-
-        .navbar {
-          gap: .6rem
-        }
-
-        .navbar a {
-          font-size: 1rem;
-          padding: .3rem .6rem
-        }
 
         .home,
         .about {
-          padding: 4.5rem 3% 3rem
+          padding: 4.5rem 5% 3rem
         }
 
         .home-content h1 {
@@ -973,6 +1077,14 @@
         .input-box {
           grid-template-columns: 1fr
         }
+
+        .theme-toggle {
+          bottom: 1.5rem;
+          right: 1.5rem;
+          width: 45px;
+          height: 45px;
+          font-size: 1.3rem
+        }
       }
     </style>
   </head>
@@ -982,6 +1094,9 @@
     <!-- HEADER -->
     <header class="header">
       <a href="#" class="logo" aria-label="Home">Portfolio</a>
+      <div class="hamburger">
+        <span></span><span></span><span></span>
+      </div>
       <nav class="navbar" role="navigation" aria-label="Main navigation">
         <a href="#" style="--i:1" class="active" aria-current="page">Home</a>
         <a href="#about" style="--i:2">About</a>
@@ -1002,11 +1117,16 @@
           and mobile application frameworks. Passionate about crafting intuitive, high-performance digital solutions
           with a focus on user experience and functionality.</p>
         <div class="home-sci">
-          <a href="#" style="--i:6" aria-label="Facebook"><i class='bx bxl-facebook-circle'></i></a>
-          <a href="#" style="--i:7" aria-label="Instagram"><i class='bx bxl-instagram'></i></a>
-          <a href="#" style="--i:8" aria-label="WhatsApp"><i class='bx bxl-whatsapp'></i></a>
-          <a href="#" style="--i:9" aria-label="Twitter"><i class='bx bxl-twitter'></i></a>
-          <a href="#" style="--i:10" aria-label="LinkedIn"><i class='bx bxl-linkedin'></i></a>
+          <a href="https://facebook.com" style="--i:6" target="_blank" aria-label="Facebook"><i
+              class='bx bxl-facebook-circle'></i></a>
+          <a href="https://instagram.com" style="--i:7" target="_blank" aria-label="Instagram"><i
+              class='bx bxl-instagram'></i></a>
+          <a href="https://wa.me/919876543210" style="--i:8" target="_blank" aria-label="WhatsApp"><i
+              class='bx bxl-whatsapp'></i></a>
+          <a href="https://twitter.com" style="--i:9" target="_blank" aria-label="Twitter"><i
+              class='bx bxl-twitter'></i></a>
+          <a href="https://linkedin.com" style="--i:10" target="_blank" aria-label="LinkedIn"><i
+              class='bx bxl-linkedin'></i></a>
         </div>
         <a href="#about" class="btn-box">More About Me</a>
       </div>
@@ -1015,7 +1135,7 @@
     <!-- ABOUT -->
     <section class="about" id="about">
       <div class="profile-photo">
-        <img src="PG.jpg" alt="Prit Ghodasara Profile" loading="lazy" />
+        <img src="PG.jpg" alt="Prit Ghodasara Profile" />
       </div>
       <div class="about-text">
         <h2>About <span>Me</span></h2>
@@ -1035,22 +1155,31 @@
         <div>
           <i class='bx bxl-apple' style='color:#920df6'></i>
           <h2>iOS Developer</h2>
-          <p>Skilled iOS developer with expertise in Swift, SwiftUI, and UIKit, building fast, elegant, and native
-            mobile experiences for iPhone and iPad.</p>
+          <p>Skilled iOS developer with expertise in Swift, SwiftUI, and UIKit, building fast, elegant,
+            and native mobile experiences for iPhone and iPad. From concept to App Store launch, I craft
+            pixel-perfect, accessible apps with smooth animations, offline support, and seamless integration with
+            CloudKit, Core Data, and RESTful APIs. Passionate about performance optimization, clean architecture
+            (MVVM), and delivering intuitive user experiences that keep users coming back.</p>
           <a href="#" class="read">Learn more</a>
         </div>
         <div>
           <i class='bx bxl-android' style='color:#930df9'></i>
           <h2>Android Developer</h2>
-          <p>Proficient in Kotlin, Jetpack Compose, and XML layouts, creating modern, responsive apps for billions of
-            devices.</p>
+          <p>Proficient Android developer specializing in Kotlin, Jetpack Compose, and XML layouts,
+            creating modern, responsive, and scalable apps for billions of devices. I implement Material Design,
+            manage complex state with ViewModel & LiveData, and ensure flawless performance across phones, tablets,
+            and foldables. Experienced in publishing to Google Play, integrating Firebase, Room database, and
+            third-party SDKs while maintaining clean, testable code.</p>
           <a href="#" class="read">Learn more</a>
         </div>
         <div>
           <i class='bx bxs-code-alt' style='color:#930df9'></i>
           <h2>Web Developer</h2>
-          <p>Full-stack web developer delivering responsive, high-performance websites and web apps using React,
-            Node.js, and Tailwind CSS.</p>
+          <p>Full-stack web developer delivering responsive, high-performance websites and web apps using
+            HTML5, CSS3, JavaScript, React, Node.js, and Tailwind CSS. From dynamic
+            single-page applications to SEO-optimized landing pages, I build fast-loading, accessible, and
+            cross-browser compatible solutions. Skilled in REST APIs, responsive design, and modern tooling (Vite,
+            Webpack), I turn ideas into interactive digital experiences that engage users and drive results.</p>
           <a href="#" class="read">Learn more</a>
         </div>
       </div>
@@ -1134,37 +1263,42 @@
         <h2>Latest <span>Project</span></h2>
         <div class="portfolio-content">
           <div class="row">
-            <img src="UI UX.jpg" alt="UI/UX Design Project - FitFlow App Redesign" loading="lazy">
+            <img src="UI UX.jpg" alt="FitFlow - UI/UX Redesign">
             <div class="layer">
               <h1>UI/UX Design</h1>
               <p>In this project, I spearheaded the UI/UX redesign of FitFlow, a mobile fitness app plagued by high
                 churn rates from its cluttered interface and unintuitive workout tracking. Starting with user
-                research—interviews with 40+ fitness enthusiasts and surveys revealing key pain points like overwhelming
-                data visualization—I crafted personas, empathy maps, and journey flows to refocus on motivation and
-                simplicity.</p>
-              <a href="#" target="_blank" aria-label="View UI/UX Project"><i class='bx bx-link-external'></i></a>
+                research—interviews with 40+ fitness enthusiasts and surveys revealing key pain points like
+                overwhelming data visualization—I crafted personas, empathy maps, and journey flows to refocus on
+                motivation and simplicity.</p>
+              <a href="https://dribbble.com" target="_blank" aria-label="View UI/UX Project"><i
+                  class='bx bx-link-external'></i></a>
             </div>
           </div>
           <div class="row">
-            <img src="AppDev.jpg" alt="Android App Development - FitFlow with Kotlin" loading="lazy">
+            <img src="AppDev.jpg" alt="FitFlow Android App">
             <div class="layer">
-              <h1>App Developer</h1>
+              <h1>Android App</h1>
               <p>I developed the Android version of FitFlow, a high-performance fitness tracking app built with Kotlin
                 and Jetpack Compose to deliver a fluid, native experience for over 50K active users. Leveraging MVVM
-                architecture, Coroutines for seamless background syncing, and Room for offline-first data persistence, I
-                integrated real-time workout tracking with Wear OS devices and Google Fit API.</p>
-              <a href="#" target="_blank" aria-label="View App Project"><i class='bx bx-link-external'></i></a>
+                architecture, Coroutines for seamless background syncing, and Room for offline-first data persistence,
+                I integrated real-time workout tracking with Wear OS devices and Google Fit API—ensuring accurate
+                step, heart rate, and GPS route capture even in low-connectivity scenarios.</p>
+              <a href="https://play.google.com" target="_blank" aria-label="View App"><i
+                  class='bx bx-link-external'></i></a>
             </div>
           </div>
           <div class="row">
-            <img src="Web.jpg" alt="Web Development - TaskFlow with React & TypeScript" loading="lazy">
+            <img src="Web.jpg" alt="TaskFlow Web App">
             <div class="layer">
-              <h1>Web Developer</h1>
-              <p>I engineered TaskFlow, a responsive full-stack web application that empowers remote teams to streamline
-                project workflows and boost productivity. Built with React and TypeScript on the frontend for a dynamic,
-                component-driven UI, I integrated Tailwind CSS for rapid, mobile-first styling and Zustand for
-                lightweight state management.</p>
-              <a href="#" target="_blank" aria-label="View Web Project"><i class='bx bx-link-external'></i></a>
+              <h1>Web App</h1>
+              <p>I engineered TaskFlow, a responsive full-stack web application that empowers remote teams to
+                streamline project workflows and boost productivity. Built with React and TypeScript on the frontend
+                for a dynamic, component-driven UI, I integrated Tailwind CSS for rapid, mobile-first styling and
+                Zustand for lightweight state management—ensuring seamless real-time updates without performance lag.
+              </p>
+              <a href="https://taskflow.example.com" target="_blank" aria-label="View Web App"><i
+                  class='bx bx-link-external'></i></a>
             </div>
           </div>
         </div>
@@ -1176,23 +1310,23 @@
       <div class="main-text">
         <h2>Contact <span>Me</span></h2>
       </div>
-      <form class="contact-form" action="#" method="POST" novalidate>
+      <form class="contact-form" id="contact-form">
         <div class="input-box">
-          <input type="text" placeholder="Full Name" required aria-label="Full Name" />
-          <input type="email" placeholder="Email Address" required aria-label="Email Address" />
+          <input type="text" id="name" placeholder="Full Name" required />
+          <input type="email" id="email" placeholder="Email Address" required />
         </div>
         <div class="input-box">
-          <input type="tel" placeholder="Mobile Number" aria-label="Mobile Number" />
-          <input type="text" placeholder="Email Subject" aria-label="Email Subject" />
+          <input type="tel" id="phone" placeholder="Mobile Number" />
+          <input type="text" id="subject" placeholder="Email Subject" />
         </div>
-        <textarea cols="30" rows="10" placeholder="Your Message" required aria-label="Your Message"></textarea>
+        <textarea id="message" cols="30" rows="10" placeholder="Your Message" required></textarea>
         <button type="submit" class="btn-box contact-btn">Send Message</button>
       </form>
       <div class="contact-info">
         <div class="info-item">
           <i class='bx bxs-phone'></i>
           <h4>Call Me</h4>
-          <p>+91 00098 00090</p>
+          <p>+91 00065 00010</p>
         </div>
         <div class="info-item">
           <i class='bx bxs-envelope'></i>
@@ -1207,38 +1341,89 @@
       </div>
     </section>
 
-    <!-- Typed.js + Optimized JS -->
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" id="theme-toggle" title="Toggle Dark/Light Mode">
+      <i class='bx bx-moon'></i>
+    </div>
+
+    <!-- Typed.js + JS -->
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <script>
+      // Initialize EmailJS (Replace with your Public Key)
+      emailjs.init("YOUR_PUBLIC_KEY"); // Get from emailjs.com
+
       document.addEventListener("DOMContentLoaded", () => {
+        // Header Animation
+        const header = document.querySelector('.header');
+        setTimeout(() => header.classList.add('show'), 100);
+
+        // Hamburger Menu
+        const hamburger = document.querySelector('.hamburger');
+        const navbar = document.querySelector('.navbar');
+        hamburger.addEventListener('click', () => {
+          hamburger.classList.toggle('active');
+          navbar.classList.toggle('active');
+        });
+
+        // Close menu on link click
+        document.querySelectorAll('.navbar a').forEach(link => {
+          link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navbar.classList.remove('active');
+          });
+        });
+
         // Typed.js
         new Typed(".text", {
           strings: ["iOS Developer", "Android Developer", "Web Developer", "Full Stack Developer"],
-          typeSpeed: 100,
-          backSpeed: 60,
-          backDelay: 1000,
-          loop: true
+          typeSpeed: 100, backSpeed: 60, backDelay: 1000, loop: true
         });
 
-        // Header Slide-In (Mobile/Tablet)
-        if (window.innerWidth <= 992) {
-          const header = document.querySelector('.header');
-          let hasScrolled = false;
-          const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting && !hasScrolled) {
-                header.classList.add('slide-in');
-                hasScrolled = true;
-              }
-            });
-          }, { threshold: 0.1 });
-          observer.observe(header);
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const icon = themeToggle.querySelector('i');
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'light') {
+          body.classList.add('light');
+          icon.classList.replace('bx-moon', 'bx-sun');
         }
 
-        // Skills Animation Loop (Only in View)
+        themeToggle.addEventListener('click', () => {
+          body.classList.toggle('light');
+          if (body.classList.contains('light')) {
+            icon.classList.replace('bx-moon', 'bx-sun');
+            localStorage.setItem('theme', 'light');
+          } else {
+            icon.classList.replace('bx-sun', 'bx-moon');
+            localStorage.setItem('theme', 'dark');
+          }
+        });
+
+        // Contact Form
+        const form = document.getElementById('contact-form');
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const btn = document.querySelector('.contact-btn');
+          btn.textContent = 'Sending...';
+
+          emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this)
+            .then(() => {
+              btn.textContent = 'Message Sent!';
+              form.reset();
+              setTimeout(() => btn.textContent = 'Send Message', 2000);
+            }, (err) => {
+              btn.textContent = 'Failed!';
+              console.error(err);
+              setTimeout(() => btn.textContent = 'Send Message', 2000);
+            });
+        });
+
+        // Skills Animation
         const skillsSection = document.querySelector('.skills');
         const progressLines = document.querySelectorAll('.Technical-bars .progress-line');
-        let loopInterval = null;
+        let loopInterval = 11;
 
         const startLoop = () => {
           if (loopInterval) return;
@@ -1250,7 +1435,7 @@
               void span.offsetWidth;
               span.style.transition = 'none';
               void span.offsetWidth;
-              span.style.transition = 'transform 1s cubic-bezier(1,0,0.5,1) 3s, opacity .5s 2.5s';
+              span.style.transition = 'transform 1s cubic-bezier(1,0,0.5,1) 1s, opacity .5s 1.5s';
               span.style.transform = 'scaleX(1)';
               span.style.opacity = '1';
             });
@@ -1262,16 +1447,10 @@
           loopInterval = null;
         };
 
-        const skillsObserver = new IntersectionObserver((entries) => {
+        const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => entry.isIntersecting ? startLoop() : stopLoop());
-        }, { threshold: 3.3 });
-        skillsObserver.observe(skillsSection);
-
-        // Cleanup
-        window.addEventListener('beforeunload', () => {
-          skillsObserver.disconnect();
-          stopLoop();
-        });
+        }, { threshold: 0.3 });
+        observer.observe(skillsSection);
       });
     </script>
   </body>
