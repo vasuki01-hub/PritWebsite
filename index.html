@@ -825,13 +825,14 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+
         transition: .4s
       }
 
       .row .layer {
         position: absolute;
         inset: 0;
-        background: linear-gradient(transparent, #07e6da, #5507e6, #5507e6, rgba(0, 0, 0, .9));
+        background: linear-gradient(transparent, #0730e6, #5507e6, #5507e6, rgba(4, 240, 228, 0.9));
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
@@ -846,14 +847,14 @@
       }
 
       .layer h1 {
-        font-size: 1.4rem;
-        margin-bottom: .5rem
+        font-size: 1rem;
+        margin-bottom: 78px
       }
 
       .layer p {
         font-size: .7rem;
-        margin-bottom: 1rem;
-        line-height: 1.2
+        margin-bottom: 0rem;
+        line-height: 1.1
       }
 
       .layer a {
@@ -1420,68 +1421,68 @@
             });
         });
 
-// === SKILL PROGRESS BAR LOOP (7 SECONDS) ===
-const progressBars = document.querySelectorAll('.Technical-bars .bar');
+        // === SKILL PROGRESS BAR LOOP (7 SECONDS) ===
+        const progressBars = document.querySelectorAll('.Technical-bars .bar');
 
-let loopTimeout = null;
+        let loopTimeout = null;
 
-const animateSkills = () => {
-  progressBars.forEach(bar => {
-    const line = bar.querySelector('.progress-line');
-    const span = line.querySelector('span');
+        const animateSkills = () => {
+          progressBars.forEach(bar => {
+            const line = bar.querySelector('.progress-line');
+            const span = line.querySelector('span');
 
-    // Reset
-    span.style.transition = 'none';
-    span.style.transform = 'scaleX(0)';
-    span.style.opacity = '0';
-    span.offsetHeight; // Trigger reflow
+            // Reset
+            span.style.transition = 'none';
+            span.style.transform = 'scaleX(0)';
+            span.style.opacity = '0';
+            span.offsetHeight; // Trigger reflow
 
-    // Re-enable transition
-    span.style.transition = 'transform 1.2s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.5s 0.8s';
+            // Re-enable transition
+            span.style.transition = 'transform 1.2s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.5s 0.8s';
 
-    // Trigger animation
-    requestAnimationFrame(() => {
-      line.classList.add('animate-progress');
-    });
-  });
+            // Trigger animation
+            requestAnimationFrame(() => {
+              line.classList.add('animate-progress');
+            });
+          });
 
-  // LOOP EVERY 7 SECONDS
-  loopTimeout = setTimeout(animateSkills, 7000);
-};
+          // LOOP EVERY 7 SECONDS
+          loopTimeout = setTimeout(animateSkills, 7000);
+        };
 
-const startSkillLoop = () => {
-  if (loopTimeout) return;
-  animateSkills();
-};
+        const startSkillLoop = () => {
+          if (loopTimeout) return;
+          animateSkills();
+        };
 
-const stopSkillLoop = () => {
-  if (loopTimeout) clearTimeout(loopTimeout);
-  loopTimeout = null;
-};
+        const stopSkillLoop = () => {
+          if (loopTimeout) clearTimeout(loopTimeout);
+          loopTimeout = null;
+        };
 
-// Observe when skills section is in view
-const skillsObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      startSkillLoop();
-    } else {
-      stopSkillLoop();
-      // Reset on leave
-      progressBars.forEach(bar => {
-        const line = bar.querySelector('.progress-line');
-        line.classList.remove('animate-progress');
-      });
-    }
-  });
-}, { threshold: 0.4 });
+        // Observe when skills section is in view
+        const skillsObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              startSkillLoop();
+            } else {
+              stopSkillLoop();
+              // Reset on leave
+              progressBars.forEach(bar => {
+                const line = bar.querySelector('.progress-line');
+                line.classList.remove('animate-progress');
+              });
+            }
+          });
+        }, { threshold: 0.4 });
 
-skillsObserver.observe(skillsSection);
+        skillsObserver.observe(skillsSection);
 
-// Cleanup
-window.addEventListener('beforeunload', () => {
-  skillsObserver.disconnect();
-  stopSkillLoop();
-});
+        // Cleanup
+        window.addEventListener('beforeunload', () => {
+          skillsObserver.disconnect();
+          stopSkillLoop();
+        });
 
         // Skills Animation
         const skillsSection = document.querySelector('.skills');
