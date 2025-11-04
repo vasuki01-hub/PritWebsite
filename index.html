@@ -1342,11 +1342,6 @@
       </div>
     </section>
 
-    <!-- Theme Toggle -->
-    <div class="theme-toggle" id="theme-toggle" title="Toggle Dark/Light Mode">
-      <i class='bx bx-moon'></i>
-    </div>
-
     <!-- Typed.js + JS -->
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <script>
@@ -1391,16 +1386,6 @@
           icon.classList.replace('bx-moon', 'bx-sun');
         }
 
-        themeToggle.addEventListener('click', () => {
-          body.classList.toggle('light');
-          if (body.classList.contains('light')) {
-            icon.classList.replace('bx-moon', 'bx-sun');
-            localStorage.setItem('theme', 'light');
-          } else {
-            icon.classList.replace('bx-sun', 'bx-moon');
-            localStorage.setItem('theme', 'dark');
-          }
-        });
 
         // Contact Form
         const form = document.getElementById('contact-form');
@@ -1520,3 +1505,4 @@
   </body>
 
 </html>
+
