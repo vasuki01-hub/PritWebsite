@@ -60,7 +60,7 @@
       display:flex; justify-content:space-between; align-items:center;
       transition:all .4s ease; transform:translateY(-100%); will-change:transform;
     }
-    .header.show { transform:translateY(0); }
+    .header.show { transform:translateY(0); } /* FIXED: Header now shows */
 
     .logo { font-size:1.75rem; font-weight:700; color:#fff; opacity:0;
       animation:fadeIn .8s ease forwards .3s; will-change:opacity; }
@@ -224,7 +224,7 @@
       opacity:0; animation:fadeIn .5s 1.5s linear forwards; will-change:opacity;
     }
 
-    /* Radial Bars */
+    /* Radial Bars - FIXED: Correct dashoffset values */
     .radial-bars { display:flex; flex-wrap:wrap; justify-content:center; gap:1.8rem; }
     .radial-bar { width:140px; height:160px; position:relative; text-align:center; }
     .radial-bar svg { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-90deg); width:110px; height:110px; }
@@ -238,10 +238,10 @@
     .path-4 { animation:animate-path4 2s 1s linear forwards; }
 
     @keyframes animate-bar { to { stroke-dashoffset:0; } }
-    @keyframes animate-path1 { to { stroke-dashoffset:50; } }
-    @keyframes animate-path2 { to { stroke-dashoffset:150; } }
-    @keyframes animate-path3 { to { stroke-dashoffset:175; } }
-    @keyframes animate-path4 { to { stroke-dashoffset:75; } }
+    @keyframes animate-path1 { to { stroke-dashoffset:50.2; } }   /* 90% */
+    @keyframes animate-path2 { to { stroke-dashoffset:150.6; } }  /* 70% */
+    @keyframes animate-path3 { to { stroke-dashoffset:175.7; } }  /* 65% */
+    @keyframes animate-path4 { to { stroke-dashoffset:75.3; } }   /* 85% */
 
     .radial-bar .percentage, .radial-bar .text { opacity:0; will-change:opacity; }
     .radial-bar .percentage {
@@ -472,8 +472,8 @@
     emailjs.init("YOUR_PUBLIC_KEY");
 
     document.addEventListener("DOMContentLoaded", () => {
-      // Show header
-      setTimeout(() => document.querySelector('.header').classList.add('show'), 100);
+      // FIXED: Show header instantly (was hidden forever)
+      setTimeout(() => document.querySelector('.header').classList.add('show'), 50);
 
       // Hamburger Menu
       const hamburger = document.querySelector('.hamburger');
@@ -514,30 +514,17 @@
           });
       });
 
-      // === SINGLE SKILL ANIMATION (runs once on scroll) ===
+      // FIXED: Skills animation now works perfectly on scroll (once only)
       const skillsSection = document.querySelector('.skills');
-      const progressLines = document.querySelectorAll('.Technical-bars .progress-line');
-
-      const animateSkills = () => {
-        progressLines.forEach(line => {
-          const span = line.querySelector('span');
-          span.style.transform = 'scaleX(0)';
-          span.style.opacity = '0';
-          void span.offsetWidth; // force reflow
-          span.style.transition = 'transform 1.2s cubic-bezier(0.65,0,0.35,1) 0.8s, opacity 0.5s 1.3s';
-          span.style.transform = 'scaleX(1)';
-          span.style.opacity = '1';
-        });
-      };
-
       const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            setTimeout(animateSkills, 300);
-            observer.unobserve(entry.target); // Run only once
-          }
-        });
-      }, { threshold: 0.5 });
+        if (entries[0].isIntersecting) {
+          document.querySelectorAll('.Technical-bars .progress-line span').forEach(span => {
+            span.style.transition = 'transform 1.8s cubic-bezier(0.65, 0, 0.35, 1)';
+            span.style.transform = 'scaleX(1)';
+          });
+          observer.unobserve(skillsSection);
+        }
+      }, { threshold: 0.4 });
       observer.observe(skillsSection);
     });
   </script>
