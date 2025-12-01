@@ -61,6 +61,11 @@
       backface-visibility: hidden;
     }
 
+
+
+
+
+    
     /* Header */
     .header {
       position:fixed; top:0; left:0; width:100%; padding:1.2rem 5%;
@@ -272,7 +277,7 @@
     }
 
     /* Portfolio */
-    .portfolio { padding:7rem 5%; background:url(Bg03.jpg) center/cover no-repeat fixed; backdrop-filter:blur(10px); text-align:center; }
+    .portfolio { padding:7rem 5%; background:url(Bg03.jpg) center/cover no-repeat fixed; backdrop-filter:blur(10px); text-align: left; }
     .portfolio-content { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1rem; margin-top:2rem; }
     .row { position:relative; overflow:hidden; border-radius:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); transition:.4s; will-change:transform; }
     .row img { width:100%; height:100%; object-fit:cover; transition:.4s; will-change:transform; }
@@ -281,6 +286,41 @@
       display:flex; flex-direction:column; justify-content:flex-end; padding:2rem;
       color:#fff; transform:translateY(100%); transition:transform .5s ease; will-change:transform;
     }
+
+  /* ... all your existing CSS ... */
+
+  /* ==== PERFECTLY ALIGNED PORTFOLIO TITLES (FIXED) ==== */
+  .portfolio .layer h1 {
+    position: absolute !important;
+    bottom: 380px;
+    left: 2rem;
+    right: 2rem;
+    margin: 0 !important;
+    font-size: 1.8rem;
+    text-align: left;
+    z-index: 2;
+    transition: all .4s ease;
+  }
+  .portfolio .layer p {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 3rem !important;
+    text-align: left;
+  }
+  .portfolio .layer a {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    font-size: 2rem;
+    z-index: 2;
+    transition: all .4s ease;
+  }
+  @media (max-width: 768px) {
+    .portfolio .layer h1 { font-size: 1.5rem; bottom: 380px; }
+    .portfolio .layer p { font-size: 0.8rem; }
+  }
+
+
     .row:hover .layer { transform:translateY(0); }
     .layer h1 { font-size:2rem; margin-bottom:185px;  }
     .layer p { font-size:.71rem; margin-bottom:0; line-height:1.04; }
