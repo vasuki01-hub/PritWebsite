@@ -318,14 +318,14 @@
   border-radius: 16px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
   aspect-ratio: 1 / 1; /* Keeps consistent height */
-  transition: transform 5.4s ease;
+  transition: transform 2.4s ease;
 }
 
 .row img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 5.4s ease;
+  transition: transform 2.4s ease;
 }
 
 .row:hover img {
@@ -900,12 +900,9 @@
 
     // Added: Remove debug class after 5s (for clean view)
     setTimeout(() => document.body.classList.remove('debug'), 5000);
-  </script>
 
-  
 
-<script>
-// Auto typing effect on hover (no click needed)
+    // Auto typing effect on hover (no click needed)
 document.querySelectorAll('.row').forEach(card => {
   const h2 = card.querySelector('.layer h2');
   if (!h2) return;
@@ -933,8 +930,12 @@ document.querySelectorAll('.row').forEach(card => {
     h2.querySelector('.typewrite').textContent = originalText;
   });
 });
-</script>
 
+
+
+  </script>
+
+  
 
 </body>
 </html>
