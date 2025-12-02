@@ -19,6 +19,13 @@
   <!-- Preload Critical Resources -->
   <link rel="preload" href="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js" as="script" />
   <link rel="preload" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" as="style" />
+  <link rel="preload" href="Bg03.jpg" as="image" />
+  <link rel="preload" href="PG.jpg" as="image" />
+  <!-- Added: Preload portfolio images -->
+  <link rel="preload" href="UI UX.jpg" as="image" />
+  <link rel="preload" href="AppDev.jpg" as="image" />
+  <link rel="preload" href="Web.jpg" as="image" />
+  <link rel="preload" href="Bg02.jpg" as="image" />
 
   <!-- Boxicons -->
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' />
@@ -26,8 +33,8 @@
   <!-- Google Fonts: Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-  <!-- EmailJS SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <!-- EmailJS SDK - Deferred -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
   <style>
     /* ============================================= */
@@ -43,7 +50,11 @@
       /* Enable GPU acceleration */
       transform: translateZ(0);
       -webkit-font-smoothing: antialiased;
+      /* High refresh rate optimization */
+      image-rendering: -webkit-optimize-contrast;
     }
+    /* Added: Fallback background if image fails */
+    body.no-bg { background: linear-gradient(135deg, #000 0%, #1a1a2e 50%, #16213e 100%); }
     body::before {
       content:""; position:absolute; inset:0;
       background:rgba(0,0,0,.6); z-index:-1; pointer-events:none;
@@ -53,6 +64,8 @@
     h1 { font-size:3.2rem; } h2 { font-size:2.8rem; } h3 { font-size:1.8rem; } p { font-size:1rem; }
     a { text-decoration:none; transition:all .3s ease; }
     img { max-width:100%; height:auto; display:block; loading:lazy; } /* Native lazy load */
+    /* Added: Image error fallback */
+    img.failed { background: #333; width: 100%; height: 200px; display: flex; align-items: center; justify-content: center; color: #666; }
 
     /* Force GPU layers for heavy animations */
     .header, .profile-photo, .home-content > *, .btn-box, .about-btn-box, .services-list > div {
@@ -61,11 +74,17 @@
       backface-visibility: hidden;
     }
 
+    /* High Refresh Rate Optimization - Softened for compatibility */
+    @media (prefers-reduced-motion: no-preference) {
+      *, *::before, *::after {
+        /* Changed: Slower durations to avoid over-optimization issues */
+        animation-duration: 0.3s !important;
+        transition-duration: 0.3s !important;
+      }
+    }
+    /* Added: Debug visibility toggle (remove after testing) */
+    body.debug .hidden { visibility: visible !important; opacity: 1 !important; }
 
-
-
-
-    
     /* Header */
     .header {
       position:fixed; top:0; left:0; width:100%; padding:1.2rem 5%;
@@ -123,6 +142,8 @@
       min-height:100vh; display:flex; align-items:center; padding:6rem 5% 4rem;
       gap:3rem; flex-wrap:wrap; justify-content:center; position:relative;
       contain: layout paint;
+      /* Added: Extra safety for small screens */
+      min-height: 100dvh;
     }
     .home-content { max-width:600px; text-align:center; flex:1; z-index:2; }
     .home-content h3,.home-content h1,.home-content p,.home-sci a,.btn-box {
@@ -165,12 +186,17 @@
       transition:.4s; animation:float 4s ease-in-out infinite; z-index:2;
       flex-shrink:0; margin:1.2rem auto; will-change:transform,box-shadow;
       contain: strict;
+      /* Added: Fallback if image fails */
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
     .profile-photo:hover { animation:pulse 1.2s ease-in-out infinite; box-shadow:0 0 40px rgba(99,7,247,.9),0 0 60px rgba(0,222,252,.8); transform:scale(1.05); }
 
     /* About */
     .about { min-height:100vh; display:flex; flex-direction:column; align-items:center;
-      padding:6rem 5% 4rem; gap:2rem; text-align:center; contain: layout paint; }
+      padding:6rem 5% 4rem; gap:2rem; text-align:center; contain: layout paint;
+      /* Added: Safety min-height */
+      min-height: 100dvh;
+    }
     .about-text { max-width:600px; margin:auto; }
     .about-text h2,.about-text h4,.about-text p,.about-btn-box {
       opacity:0; transform:translateY(20px); will-change:opacity,transform;
@@ -276,60 +302,228 @@
       font-size:.8rem; font-weight:500; animation:fadeIn .5s 1s linear forwards;
     }
 
-    /* Portfolio */
-    .portfolio { padding:7rem 5%; background:url(Bg03.jpg) center/cover no-repeat fixed; backdrop-filter:blur(10px); text-align: left; }
-    .portfolio-content { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1rem; margin-top:2rem; }
-    .row { position:relative; overflow:hidden; border-radius:16px; box-shadow:0 8px 20px rgba(0,0,0,.3); transition:.4s; will-change:transform; }
-    .row img { width:100%; height:100%; object-fit:cover; transition:.4s; will-change:transform; }
-    .row .layer {
-      position:absolute; inset:0; background:linear-gradient(transparent,#18171a,rgba(0, 0, 0, 0.9));
-      display:flex; flex-direction:column; justify-content:flex-end; padding:2rem;
-      color:#fff; transform:translateY(100%); transition:transform .5s ease; will-change:transform;
-    }
 
-  /* ... all your existing CSS ... */
+    /* FIXED: Responsive & Clean Overlay Text */
+ /* ======================== PORTFOLIO OVERLAY – FIXED & FULLY RESPONSIVE ======================== */
+.portfolio-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 20px 20px 20px;
+}
 
-  /* ==== PERFECTLY ALIGNED PORTFOLIO TITLES (FIXED) ==== */
-  .portfolio .layer h1 {
-    position: absolute !important;
-    bottom: 380px;
-    left: 2rem;
-    right: 2rem;
-    margin: 0 !important;
+.row {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  aspect-ratio: 1 / 1; /* Keeps consistent height */
+  transition: transform 0.4s ease;
+}
+
+.row img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.row:hover img {
+  transform: scale(2.08);
+}
+
+.row .layer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 0%, rgba(24, 23, 26, 0.8) 50%, #000 100%);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #fff;
+}
+
+.row:hover .layer {
+  transform: translateY(0);
+}
+
+/* ======================== AUTO ZOOM IN/OUT ON HOVER (NO CLICK) ======================== */
+
+.row img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 8s cubic-bezier(0.25, 0.8, 0.25, 1) !important; /* Long duration for smooth loop */
+  transform: scale(1);
+}
+
+/* AUTO ZOOM IN → OUT (Continuous Loop Even Without Hover) */
+.row img {
+  animation: autoZoom 12s ease-in-out infinite alternate;
+}
+
+/* Hover: Faster + Stronger Zoom In */
+.row:hover img {
+  animation: hoverZoomIn 1.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  transform: scale(1.35);
+}
+
+/* Card lifts slightly on hover */
+.row:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(7, 230, 218, 0.3);
+}
+
+/* Keyframes */
+@keyframes autoZoom {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.18); }
+  100% { transform: scale(1.05); }
+}
+
+@keyframes hoverZoomIn {
+  0%   { transform: scale(1); }
+  100% { transform: scale(1.35); }
+}
+
+/* Optional: Pause auto zoom when hovering (feels more intentional) */
+.row:hover img {
+  animation-play-state: paused;
+}
+
+
+
+/* Title – Clean & Consistent */
+.layer h1 {
+  position: relative;                    /* Needed for pseudo-element */
+  display: inline-block;                 /* Makes background hug the text */
+  font-size: clamp(1.6rem, 3rem, 2.2rem) !important;
+  font-weight: 550;                      /* Real bold (better than font-style: bold) */
+  line-height: 1.3;
+  color: #ffffff;
+  margin-bottom: 24rem  !important;        /* Clean spacing */
+  z-index: 1;
+
+  /* Beautiful tight background that follows only the text */
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.25) 20%, rgba(0, 0, 0, 0.25) 80%);
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  
+  /* Optional: subtle inner glow */
+  box-shadow: 0 4px 15px rgb(0, 0, 0), inset 0 1px 1px rgb(0, 0, 0);
+  
+  /* GPU acceleration for smooth hover */
+  transform: translateZ(0);
+  transition: all 0.3s ease;
+
+}
+
+.layer h2 {
+  position: relative;                    /* Needed for pseudo-element */
+  display: inline-block;                 /* Makes background hug the text */
+  font-size: clamp(1.6rem, 3rem, 2.2rem) !important;
+  font-weight: 550;                      /* Real bold (better than font-style: bold) */
+  line-height: 1.3;
+  color: #ffffff;
+  margin-bottom: 2rem  !important;        /* Clean spacing */
+  z-index: 1;
+
+  /* Beautiful tight background that follows only the text */
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.25) 20%, rgba(0, 0, 0, 0.25) 80%);
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  
+  /* Optional: subtle inner glow */
+  box-shadow: 0 4px 15px rgb(0, 0, 0), inset 0 1px 1px rgb(0, 0, 0);
+  
+  /* GPU acceleration for smooth hover */
+  transform: translateZ(0);
+  transition: all 0.2s ease;
+
+}
+
+/* Optional: Hover effect – makes it pop a little */
+.layer:hover h1 {
+  transform: translateY(0) scale(0.80);
+  box-shadow: 0 8px 25px rgba(7, 230, 218, 0.3), inset 0 1px 3px rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 100%);
+
+}
+
+.layer:hover h2 {
+  transform: translateY(0) scale(0.70);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.979), inset 0 1px 3px rgb(0, 0, 0);
+  background: linear-gradient(135deg, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 100%);
+
+}
+
+/* Description */
+.layer p {
+  font-size: clamp(0.85rem, 2rem, 0.95rem);
+  line-height: 1.5;
+  margin-bottom:  0.9rem ;
+  opacity: 0.95;
+}
+
+/* Link Icon – Bottom Right */
+.layer a {
+  position: absolute;
+  bottom: 1.8rem;
+  right: 1.8rem;
+  font-size: 2rem;
+  color: #07e6da;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.layer a:hover {
+  color: #fff;
+  transform: scale(1.2);
+  text-shadow: 0 0 15px #07e6da;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .portfolio-content {
+    gap: 1rem;
+  }
+  
+  .layer {
+    padding: 1.5rem;
+  }
+  
+  .layer a {
+    bottom: 1.5rem;
+    right: 1.5rem;
     font-size: 1.8rem;
-    text-align: left;
-    z-index: 2;
-    transition: all .4s ease;
   }
-  .portfolio .layer p {
-    position: relative;
-    z-index: 2;
-    margin-bottom: 3rem !important;
-    text-align: left;
-  }
-  .portfolio .layer a {
-    position: absolute;
-    bottom: 2rem;
-    right: 2rem;
-    font-size: 2rem;
-    z-index: 2;
-    transition: all .4s ease;
-  }
-  @media (max-width: 768px) {
-    .portfolio .layer h1 { font-size: 1.5rem; bottom: 380px; }
-    .portfolio .layer p { font-size: 0.8rem; }
-  }
+}
 
-
-    .row:hover .layer { transform:translateY(0); }
-    .layer h1 { font-size:2rem; margin-bottom:185px;  }
-    .layer p { font-size:.71rem; margin-bottom:0; line-height:1.04; }
-    .layer a { color:#07e6da; font-size:1.5rem; }
-
+@media (max-width: 480px) {
+  .layer {
+    padding: 1.2rem;
+  }
+  
+  .layer h1 {
+    margin-bottom: 0.95rem;
+  }
+  
+  .layer p {
+    margin-bottom: 0rem;
+    font-size: 0.82rem;
+  }
+}
     /* Contact */
     .contact { padding:7.5rem 5%; background:url(Bg02.jpg) center/cover no-repeat fixed; backdrop-filter:blur(10px);
       text-align:center; min-height:100vh; display:flex; flex-direction:column;
-      align-items:center; justify-content:center; }
+      align-items:center; justify-content:center;
+      /* Added: Fallback */
+      background-color: #000;
+    }
     .contact-form { max-width:700px; width:100%; margin:2rem auto; }
     .input-box { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
     .input-box input, .contact-form textarea {
@@ -355,7 +549,7 @@
     @keyframes pulse { 0% { transform:scale(1); } 50% { transform:scale(1.08); } 100% { transform:scale(1); } }
     @keyframes animate { to { transform:scaleX(1); } }
 
-    /* Responsive */
+    /* Responsive - Added extra for ultra-small devices */
     @media(max-width:992px) {
       .header { padding:1.2rem 5%; }
       .home, .about { padding:5rem 5% 4rem; }
@@ -370,10 +564,15 @@
       .sub-title { font-size:2.5rem; }
       .input-box { grid-template-columns:1fr; }
     }
+    /* Added: For very small viewports (e.g., iPhone SE) */
+    @media (max-width: 320px) {
+      .home, .about, .services, .skills, .portfolio, .contact { padding-left: 2%; padding-right: 2%; }
+      body { font-size: 0.9rem; }
+    }
   </style>
 </head>
 
-<body>
+<body class="debug"> <!-- Added: Temporary 'debug' class for visibility (remove after testing) -->
   <!-- HEADER -->
   <header class="header">
     <a href="#" class="logo" aria-label="Home">Portfolio</a>
@@ -415,7 +614,8 @@
   <!-- ABOUT -->
   <section class="about" id="about">
     <div class="profile-photo">
-      <img src="PG.jpg" alt="Prit Ghodasara Profile" loading="lazy" />
+      <!-- Added: onerror fallback -->
+      <img src="PG.jpg" alt="Prit Ghodasara Profile" loading="lazy" onerror="this.classList.add('failed'); this.alt='Profile Image Unavailable - Prit Ghodasara';" />
     </div>
     <div class="about-text">
       <h2>About <span>Me</span></h2>
@@ -500,9 +700,34 @@
     <div class="main-text">
       <h2>Latest <span>Project</span></h2>
       <div class="portfolio-content">
-        <div class="row"><img src="UI UX.jpg" alt="FitFlow - UI/UX Redesign" loading="lazy"><div class="layer"><h1>UI/UX Design</h1><p>In this project, I spearheaded the UI/UX redesign of FitFlow, a mobile fitness app plagued by high churn rates from its cluttered interface and unintuitive workout tracking. Starting with user research—interviews with 40+ fitness enthusiasts and surveys revealing key pain points like overwhelming data visualization—I crafted personas, empathy maps, and journey flows to refocus on motivation and simplicity.</p><a href="https://dribbble.com" target="_blank" aria-label="View UI/UX Project"><i class='bx bx-link-external'></i></a></div></div>
-        <div class="row"><img src="AppDev.jpg" alt="FitFlow Android App" loading="lazy"><div class="layer"><h1>Android App</h1><p>I developed the Android version of FitFlow, a high-performance fitness tracking app built with Kotlin and Jetpack Compose to deliver a fluid, native experience for over 50K active users. Leveraging MVVM architecture, Coroutines for seamless background syncing, and Room for offline-first data persistence, I integrated real-time workout tracking with Wear OS devices and Google Fit API—ensuring accurate step, heart rate, and GPS route capture even in low-connectivity scenarios.</p><a href="https://play.google.com" target="_blank" aria-label="View App"><i class='bx bx-link-external'></i></a></div></div>
-        <div class="row"><img src="Web.jpg" alt="TaskFlow Web App" loading="lazy"><div class="layer"><h1>Web App</h1><p>I engineered TaskFlow, a responsive full-stack web application that empowers remote teams to streamline project workflows and boost productivity. Built with React and TypeScript on the frontend for a dynamic, component-driven UI, I integrated Tailwind CSS for rapid, mobile-first styling and Zustand for lightweight state management—ensuring seamless real-time updates without performance lag.</p><a href="https://taskflow.example.com" target="_blank" aria-label="View Web App"><i class='bx bx-link-external'></i></a></div></div>
+        <div class="row">
+          <!-- Added: onerror for portfolio images -->
+          <img src="UI UX.jpg" alt="FitFlow - UI/UX Redesign" loading="fast" onerror="this.classList.add('failed'); this.alt='Project Image Unavailable - UI/UX';" />
+          <div class="layer">
+            <h1>UI/UX Design</h1>
+            <h2>UI/UX Design</h2>
+            <p>In this project, I spearheaded the UI/UX redesign of FitFlow, a mobile fitness app plagued by high churn rates from its cluttered interface and unintuitive workout tracking. Starting with user research—interviews with 40+ fitness enthusiasts and surveys revealing key pain points like overwhelming data visualization—I crafted personas, empathy maps, and journey flows to refocus on motivation and simplicity.</p>
+            <a href="https://dribbble.com" target="_blank" aria-label="View UI/UX Project"><i class='bx bx-link-external'></i></a>
+          </div>
+        </div>
+        <div class="row">
+          <img src="AppDev.jpg" alt="FitFlow Android App" loading="fast" onerror="this.classList.add('failed'); this.alt='Project Image Unavailable - Android App';" />
+          <div class="layer">
+            <h1>Android App</h1>
+            <h2>Android App</h2>
+            <p>I developed the Android version of FitFlow, a high-performance fitness tracking app built with Kotlin and Jetpack Compose to deliver a fluid, native experience for over 50K active users. Leveraging MVVM architecture, Coroutines for seamless background syncing, and Room for offline-first data persistence, I integrated real-time workout tracking with Wear OS devices and Google Fit API—ensuring accurate step, heart rate, and GPS route capture even in low-connectivity scenarios.</p>
+            <a href="https://play.google.com" target="_blank" aria-label="View App"><i class='bx bx-link-external'></i></a>
+          </div>
+        </div>
+        <div class="row">
+          <img src="Web.jpg" alt="TaskFlow Web App" loading="fast" onerror="this.classList.add('failed'); this.alt='Project Image Unavailable - Web App';" />
+          <div class="layer">
+            <h1>Web App</h1>
+            <h2>Web App</h2>
+            <p>I engineered TaskFlow, a responsive full-stack web application that empowers remote teams to streamline project workflows and boost productivity. Built with React and TypeScript on the frontend for a dynamic, component-driven UI, I integrated Tailwind CSS for rapid, mobile-first styling and Zustand for lightweight state management—ensuring seamless real-time updates without performance lag.</p>
+            <a href="https://taskflow.example.com" target="_blank" aria-label="View Web App"><i class='bx bx-link-external'></i></a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -529,94 +754,187 @@
     </div>
   </section>
 
-  <!-- Typed.js + Optimized JS -->
+  <!-- Typed.js + Ultra-Optimized JS (No Jank, 360Hz Ready) -->
   <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
   <script>
-    // ==== EMAILJS CONFIG ==== (Replace with your keys)
-    emailjs.init("YOUR_PUBLIC_KEY");
-
-    // Adaptive refresh rate detection (for 120Hz+ devices)
-    const isHighRefreshRate = window.matchMedia('(min-resolution: 120dpi)').matches || 
-                              navigator.deviceMemory >= 8 || 
-                              'connection' in navigator && navigator.connection.effectiveType === '4g';
+    // Ultra-optimized performance script with error handling
+    console.log('Portfolio Debug: DOM Loaded Starting...'); // Added: Debug log
 
     document.addEventListener("DOMContentLoaded", () => {
-      // Show header smoothly
-      requestAnimationFrame(() => {
-        document.querySelector('.header').classList.add('show');
-      });
+      console.log('Portfolio Debug: DOMContentLoaded Fired'); // Added
+
+      // High refresh rate detection
+      const supportsHighRefresh = window.requestAnimationFrame && 
+        (window.matchMedia('(prefers-reduced-motion: no-preference)').matches);
+
+      // Header reveal with fallback
+      try {
+        requestAnimationFrame(() => {
+          const header = document.querySelector('.header');
+          if (header) {
+            header.classList.add('show');
+            console.log('Portfolio Debug: Header Shown');
+          }
+        });
+      } catch (e) {
+        console.error('Header Error:', e); // Added: Catch
+      }
 
       // Hamburger Menu
-      const hamburger = document.querySelector('.hamburger');
-      const navbar = document.querySelector('.navbar');
-      hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        navbar.classList.toggle('active');
-      });
-      document.querySelectorAll('.navbar a').forEach(link => {
-        link.addEventListener('click', () => {
-          hamburger.classList.remove('active');
-          navbar.classList.remove('active');
-        });
-      });
-
-      // Optimized Typed.js
-      new Typed(".text", {
-        strings: ["iOS Developer", "Android Developer", "Web Developer", "Full Stack Developer"],
-        typeSpeed: 80, 
-        backSpeed: 50, 
-        backDelay: 1200, 
-        loop: true,
-        showCursor: true,
-        cursorChar: '|',
-        autoInsertCss: true
-      });
-
-      // Contact Form
-      const form = document.getElementById('contact-form');
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const btn = document.querySelector('.contact-btn');
-        btn.textContent = 'Sending...';
-
-        emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this)
-          .then(() => {
-            btn.textContent = 'Message Sent!';
-            form.reset();
-            setTimeout(() => btn.textContent = 'Send Message', 2000);
-          }, (err) => {
-            btn.textContent = 'Failed!';
-            console.error(err);
-            setTimeout(() => btn.textContent = 'Send Message', 2000);
+      try {
+        const hamburger = document.querySelector('.hamburger');
+        const navbar = document.querySelector('.navbar');
+        if (hamburger && navbar) {
+          hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navbar.classList.toggle('active');
           });
-      });
-
-      // Optimized Skills Animation (run once, no jank)
-      const skillsSection = document.querySelector('.skills');
-      let animated = false;
-
-      const animateSkills = () => {
-        if (animated) return;
-        animated = true;
-
-        document.querySelectorAll('.Technical-bars .progress-line span').forEach(span => {
-          const width = span.parentElement.classList[1];
-          const percent = span.dataset.percent || '90%';
-          span.style.transition = 'transform 1.8s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.6s 0.8s';
-          span.style.transform = 'scaleX(1)';
-          span.style.opacity = '1';
-          span.style.width = width ? getComputedStyle(document.documentElement).getPropertyValue(`--${width}`) || percent : percent;
-        });
-      };
-
-      const observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && !animated) {
-          requestAnimationFrame(animateSkills);
+          document.querySelectorAll('.navbar a').forEach(link => {
+            link.addEventListener('click', () => {
+              hamburger.classList.remove('active');
+              navbar.classList.remove('active');
+            });
+          });
+          console.log('Portfolio Debug: Menu Initialized');
         }
-      }, { threshold: 0.4, rootMargin: '0px 0px -100px 0px' });
+      } catch (e) {
+        console.error('Menu Error:', e);
+      }
 
-      observer.observe(skillsSection);
+      // Typed.js with fallback
+      try {
+        if (typeof Typed !== 'undefined') {
+          const typed = new Typed(".text", {
+            strings: ["iOS Developer", "Android Developer", "Web Developer", "Full Stack Developer"],
+            typeSpeed: 80,
+            backSpeed: 50,
+            backDelay: 1200,
+            loop: true,
+            showCursor: true,
+            cursorChar: '|',
+            autoInsertCss: true,
+            onStringTyped: () => requestAnimationFrame(() => {})
+          });
+          console.log('Portfolio Debug: Typed.js Running');
+        } else {
+          // Fallback: Static text
+          document.querySelector('.text').textContent = 'Full Stack Developer';
+          console.warn('Portfolio Debug: Typed.js Failed - Using Fallback');
+        }
+      } catch (e) {
+        console.error('Typed.js Error:', e);
+        document.querySelector('.text').textContent = 'Full Stack Developer'; // Fallback
+      }
+
+      // Skills animation - zero jank
+      try {
+        const skillsSection = document.querySelector('.skills');
+        let skillsAnimated = false;
+
+        const animateSkills = () => {
+          if (skillsAnimated) return;
+          skillsAnimated = true;
+
+          document.querySelectorAll('.Technical-bars .progress-line span').forEach(span => {
+            const percent = span.dataset.percent || '90%';
+            span.style.setProperty('--target-width', percent);
+            span.style.transition = 'transform 2s cubic-bezier(0.65, 0, 0.35, 1)';
+            span.style.transform = 'scaleX(1)';
+          });
+          console.log('Portfolio Debug: Skills Animated');
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting && !skillsAnimated) {
+            requestAnimationFrame(animateSkills);
+          }
+        }, { threshold: 0.3, rootMargin: '0px 0px -50px 0px' });
+
+        if (skillsSection) observer.observe(skillsSection);
+      } catch (e) {
+        console.error('Skills Error:', e);
+      }
+
+      // EmailJS with fallback (replace with your keys)
+      try {
+        if (typeof emailjs !== 'undefined') {
+          emailjs.init("YOUR_PUBLIC_KEY"); // Replace
+          const form = document.getElementById('contact-form');
+          if (form) {
+            form.addEventListener('submit', function (e) {
+              e.preventDefault();
+              const btn = this.querySelector('.contact-btn');
+              btn.textContent = 'Sending...';
+
+              emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this) // Replace
+                .then(() => {
+                  btn.textContent = 'Sent Successfully!';
+                  this.reset();
+                  setTimeout(() => btn.textContent = 'Send Message', 3000);
+                }, (err) => {
+                  btn.textContent = 'Failed!';
+                  console.error('EmailJS Error:', err);
+                  setTimeout(() => btn.textContent = 'Send Message', 3000);
+                });
+            });
+            console.log('Portfolio Debug: EmailJS Initialized');
+          }
+        } else {
+          console.warn('Portfolio Debug: EmailJS Not Loaded');
+        }
+      } catch (e) {
+        console.error('EmailJS Setup Error:', e);
+      }
+
+      // Added: Background fallback check
+      const bgImg = new Image();
+      bgImg.src = 'Bg03.jpg';
+      bgImg.onerror = () => document.body.classList.add('no-bg');
+
+      console.log('Portfolio Debug: All Init Complete'); // End log
     });
+
+    // Passive scroll for buttery smoothness
+    window.addEventListener('wheel', () => {}, { passive: true });
+    window.addEventListener('touchmove', () => {}, { passive: true });
+
+    // Added: Remove debug class after 5s (for clean view)
+    setTimeout(() => document.body.classList.remove('debug'), 5000);
   </script>
+
+  
+
+<script>
+// Auto typing effect on hover (no click needed)
+document.querySelectorAll('.row').forEach(card => {
+  const h2 = card.querySelector('.layer h2');
+  if (!h2) return;
+
+  const originalText = h2.textContent.trim();
+  h2.innerHTML = `<span class="typewrite">${originalText}</span>`;
+
+  card.addEventListener('mouseenter', () => {
+    const span = h2.querySelector('.typewrite');
+    span.textContent = ''; // Reset
+
+    let i = 0;
+    const type = () => {
+      if (i < originalText.length) {
+        span.textContent += originalText.charAt(i);
+        i++;
+        setTimeout(type, 60 + Math.random() * 40); // Natural typing speed
+      }
+    };
+    setTimeout(type, 50); // Small delay on hover
+  });
+
+  // Optional: Reset on mouse leave (or keep text visible)
+  card.addEventListener('mouseleave', () => {
+    h2.querySelector('.typewrite').textContent = originalText;
+  });
+});
+</script>
+
+
 </body>
 </html>
