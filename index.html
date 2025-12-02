@@ -351,13 +351,6 @@
 
 /* ======================== AUTO ZOOM IN/OUT ON HOVER (NO CLICK) ======================== */
 
-.row img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 8s cubic-bezier(0.25, 0.8, 0.25, 1) !important; /* Long duration for smooth loop */
-  transform: scale(1);
-}
 
 /* AUTO ZOOM IN → OUT (Continuous Loop Even Without Hover) */
 .row img {
@@ -894,6 +887,7 @@
       console.log('Portfolio Debug: All Init Complete'); // End log
     });
 
+
     // Passive scroll for buttery smoothness
     window.addEventListener('wheel', () => {}, { passive: true });
     window.addEventListener('touchmove', () => {}, { passive: true });
@@ -931,11 +925,7 @@ document.querySelectorAll('.row').forEach(card => {
   });
 });
 
-
-
   </script>
-
-  
 
 </body>
 </html>
