@@ -429,7 +429,7 @@
         overflow: hidden;
         border: 4px solid rgba(99, 7, 247, .9);
         box-shadow: 0 0 25px rgba(7, 247, 235, .6);
-        transition: 5.4s;
+        transition: .4s;
         animation: float 4s ease-in-out infinite;
         z-index: 2;
         flex-shrink: 0;
@@ -891,49 +891,46 @@
       }
 
       /* ======================== AUTO ZOOM IN/OUT ON HOVER (NO CLICK) ======================== */
+/* ==================== FIX 2: PORTFOLIO IMAGE ZOOM IN/OUT (LATEST PROJECT) ==================== */
+/* Remove conflicting transform & animation overrides */
+.row img {
+    animation: none !important;                    /* Disable broken autoZoom */
+    transform: scale(1) !important;                /* Reset base scale */
+    transition: transform 8s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
 
+/* Smooth continuous auto zoom (background subtle effect) */
+.row img {
+    animation: autoZoom 14s ease-in-out infinite alternate !important;
+}
 
-      /* AUTO ZOOM IN → OUT (Continuous Loop Even Without Hover) */
-      .row img {
-        animation: autoZoom 12s ease-in-out infinite alternate;
-      }
+/* Stronger, faster zoom on hover */
+.row:hover img {
+    animation: hoverZoomIn 5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
+    transform: scale(1.9) !important;
+}
 
-      /* Hover: Faster + Stronger Zoom In */
-      .row:hover img {
-        animation: hoverZoomIn 6.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
-        transform: scale(1.35);
-      }
+/* Pause auto animation when hovering so hover zoom feels intentional */
+.row:hover img {
+    animation-play-state: paused !important;
+}
 
-      /* Card lifts slightly on hover */
-      .row:hover {
-        transform: translateY(-12px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(7, 230, 218, 0.3);
-      }
+/* Keep card lift effect */
+.row:hover {
+    transform: translateY(-12px) scale(1.02) !important;
+}
 
-      /* Keyframes */
-      @keyframes autoZoom {
-        0% {
-          transform: scale(1);
-        }
+/* Ensure keyframes are not overridden */
+@keyframes autoZoom {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.22); }
+    100% { transform: scale(1.08); }
+}
 
-        50% {
-          transform: scale(1.18);
-        }
-
-        100% {
-          transform: scale(1.05);
-        }
-      }
-
-      @keyframes hoverZoomIn {
-        0% {
-          transform: scale(1);
-        }
-
-        100% {
-          transform: scale(1.35);
-        }
-      }
+@keyframes hoverZoomIn {
+    0%   { transform: scale(1); }
+    100% { transform: scale(1.9); }
+}
 
       /* Optional: Pause auto zoom when hovering (feels more intentional) */
       .row:hover img {
@@ -1736,5 +1733,3 @@
   </body>
 
 </html>
-
-
