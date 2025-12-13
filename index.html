@@ -286,8 +286,12 @@
 
     .profile-photo:hover { animation: float 7s ease-in-out infinite, pulse 2s ease-in-out infinite; box-shadow: 0 0 40px rgba(99, 7,247,.9), 0 0 60px rgba(0,222,252,.8); transform: scale(1.05); }
 
-    @media (max-width: 768px) { .profile-photo { width: 240px; height: 240px; } }
-    @media (max-width: 480px) { .profile-photo { width: 200px; height: 200px; } }
+    @media (max-width: 768px) { .profile-photo { width: 240px; height: 240px; }     
+    .profile-photo:hover { animation: float 7s ease-in-out infinite, pulse 2s ease-in-out infinite; box-shadow: 0 0 40px rgba(99, 7,247,.9), 0 0 60px rgba(0,222,252,.8); transform: scale(1.05); }
+}
+    @media (max-width: 480px) { .profile-photo { width: 200px; height: 200px; }     
+    .profile-photo:hover { animation: float 7s ease-in-out infinite, pulse 2s ease-in-out infinite; box-shadow: 0 0 40px rgba(99, 7,247,.9), 0 0 60px rgba(0,222,252,.8); transform: scale(1.05); }
+ }
 
     /* About */
     .about {
@@ -575,12 +579,16 @@
       .portfolio-content { gap: 1rem; }
       .layer { padding: 1.5rem; }
       .layer a { bottom: 1.5rem; right: 1.5rem; font-size: 1.8rem; }
+          .row:hover img { transform: scale(1.9); animation-play-state: paused; }
+
     }
 
     @media (max-width: 480px) {
       .layer { padding: 1.2rem; }
       .layer h1 { margin-bottom: 24rem; }
       .layer p { margin-bottom: 0rem; font-size: 0.82rem; }
+          .row:hover img { transform: scale(1.9); animation-play-state: paused; }
+
     }
 
     /* Contact */
