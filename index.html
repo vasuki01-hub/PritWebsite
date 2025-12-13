@@ -470,6 +470,7 @@
     }
 
     /* Portfolio - Slower & consistent zoom */
+       /* Portfolio */
     .portfolio-content {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -483,20 +484,18 @@
       border-radius: 16px;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
       aspect-ratio: 1 / 1;
-      transition: transform 0.5s ease;
+      transition: transform 2.4s ease;
     }
 
     .row img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 8s ease-in-out; /* Slow, elegant zoom */
+      transition: transform 2.4s ease;
+      animation: autoZoom 14s ease-in-out infinite alternate;
     }
 
-    .row:hover img,
-    .row:active img {
-      transform: scale(1.3); /* Reduced scale for smoother feel */
-    }
+    .row:hover img { transform: scale(1.9); animation-play-state: paused; }
 
     .row .layer {
       position: absolute;
@@ -507,15 +506,50 @@
       flex-direction: column;
       justify-content: flex-end;
       transform: translateY(100%);
-      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
       color: #fff;
     }
 
-    .row:hover .layer,
-    .row:active .layer { transform: translateY(0); }
+    .row:hover .layer { transform: translateY(0); }
 
-    .layer h1, .layer h2 { font-weight: 550; }
-    .layer p { font-size: clamp(0.85rem, 2rem, 0.95rem); line-height: 1.5; margin-bottom: 0.9rem; opacity: 0.95; }
+    @keyframes autoZoom {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.22); }
+      100% { transform: scale(1.08); }
+    }
+
+    .layer h1 {
+      font-size: clamp(1.6rem, 2rem, 2.2rem);
+      font-weight: 550;
+      margin-bottom: 25rem;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.25) 20%, rgba(0, 0, 0, 0.25) 80%);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 15px rgb(0, 0, 0), inset 0 1px 1px rgb(0, 0, 0);
+      transform: translateZ(0);
+      transition: all 0.8s ease;
+    }
+
+    .layer h2 {
+      font-size: clamp(1.3rem, 3rem, 2.2rem);
+      font-weight: 550;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.25) 20%, rgba(0, 0, 0, 0.25) 80%);
+      backdrop-filter: blur(10px);
+      border-radius: 25px;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 15px rgb(0, 0, 0), inset 0 1px 1px rgb(0, 0, 0);
+      transform: translateZ(0);
+      transition: all 0.8s ease;
+    }
+
+    .layer p {
+      font-size: clamp(0.85rem, 2rem, 0.95rem);
+      line-height: 1.5;
+      margin-bottom: 0.9rem;
+      opacity: 0.95;
+    }
 
     .layer a {
       position: absolute;
@@ -524,10 +558,25 @@
       font-size: 2rem;
       color: #07e6da;
       transition: all 0.3s ease;
+      z-index: 2;
     }
 
     .layer a:hover { color: #fff; transform: scale(1.2); text-shadow: 0 0 15px #07e6da; }
 
+    @media (max-width: 768px) {
+      .portfolio-content { gap: 1rem; }
+      .layer { padding: 1.5rem; }
+      .layer a { bottom: 1.5rem; right: 1.5rem; font-size: 1.8rem; }
+    }
+
+    @media (max-width: 380px) {
+      .layer { padding: 1.2rem; }
+      .layer h1 { margin-bottom: 24rem; }
+      .layer p { margin-bottom: 0rem; font-size: 0.82rem; }
+    }
+
+
+    
     /* Contact */
     .contact {
       padding: 7.5rem 5%;
@@ -933,3 +982,4 @@
   </script>
 </body>
 </html>
+
