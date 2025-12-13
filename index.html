@@ -22,7 +22,6 @@
   <link rel="preload" href="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js" as="script" />
   <link rel="preload" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" as="style" />
   <link rel="preload" href="PG.jpg" as="image" />
-  <!-- Added: Preload portfolio images -->
   <link rel="preload" href="UI UX.jpg" as="image" />
   <link rel="preload" href="AppDev.jpg" as="image" />
   <link rel="preload" href="Web.jpg" as="image" />
@@ -32,101 +31,80 @@
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' />
 
   <!-- Google Fonts: Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- EmailJS SDK - Deferred -->
   <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
   <style>
-    /* === ONLY BACKGROUND PART CHANGED === */
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
+    html { scroll-behavior:smooth; height:100%; }
     body {
       font-family: 'Inter', sans-serif;
       color: #fff;
-      background: #000;
+      background: transparent; /* Essential for video to show */
       min-height: 100vh;
       position: relative;
       overflow-x: hidden;
       line-height: 1.6;
-      transform: translateZ(0);
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Full-screen YouTube Background */
+    /* Video background - fixed and behind everything */
     .video-background {
       position: fixed;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      z-index: -2;
+      z-index: -1000;
       overflow: hidden;
     }
-    .video-foreground,
-    .video-foreground iframe {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
+
+    .video-background video {
+      width: max-content;
+      height: max-content;
+      object-fit: 100%;
       pointer-events: none;
     }
-    @media (min-aspect-ratio: 16/9) {
-      .video-foreground { height: 300%; top: -100%; }
-    }
-    @media (max-aspect-ratio: 16/9) {
-      .video-foreground { width: 300%; left: -100%; }
-    }
 
-
-    /* Dark overlay for better text readability */
+    /* Dark overlay for readability */
     body::before {
       content: "";
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, .6);
-      z-index: -1;
+      z-index: -999;
       pointer-events: none;
-      transition: opacity .5s ease;
     }
 
-    h1,
-    h2,
-    h3,
-    h4 {
-      font-weight: 700;
+    /* Force all sections to be transparent/semi-transparent */
+    section {
+      position: relative;
+      z-index: 1;
+      background: transparent !important;
     }
 
-    h1 {
-      font-size: 3.2rem;
+    .services,
+    .skills {
+      background: rgba(0, 0, 0, .4) !important;
+      backdrop-filter: blur(10px);
     }
 
-    h2 {
-      font-size: 2.8rem;
+    .contact {
+      background: rgba(0, 0, 0, .3) !important;
+      backdrop-filter: blur(10px);
     }
 
-    h3 {
-      font-size: 1.8rem;
-    }
+    h1, h2, h3, h4 { font-weight: 700; }
+    h1 { font-size: 3.2rem; }
+    h2 { font-size: 2.8rem; text-align: center; }
+    h3 { font-size: 1.8rem; }
+    p { font-size: 1rem; }
 
-    p {
-      font-size: 1rem;
-    }
+    a { text-decoration: none; transition: all .3s ease; }
+    img { max-width: 100%; height: auto; display: block; loading: lazy; }
 
-    a {
-      text-decoration: none;
-      transition: all .3s ease;
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-      loading: lazy;
-    }
-
-    /* Native lazy load */
-    /* Added: Image error fallback */
     img.failed {
       background: #333;
       width: 100%;
@@ -137,41 +115,24 @@
       color: #666;
     }
 
-    /* Force GPU layers for heavy animations */
-    .header,
-    .profile-photo,
-    .home-content>*,
-    .btn-box,
-    .about-btn-box,
-    .services-list>div {
+    .header, .profile-photo, .home-content>*,
+    .btn-box, .about-btn-box, .services-list>div {
       will-change: transform, opacity;
       transform: translateZ(0);
       backface-visibility: hidden;
     }
 
-    /* High Refresh Rate Optimization - Softened for compatibility */
     @media (prefers-reduced-motion: no-preference) {
-
-      *,
-      *::before,
-      *::after {
-        /* Changed: Slower durations to avoid over-optimization issues */
+      *, *::before, *::after {
         animation-duration: 0.3s !important;
         transition-duration: 0.3s !important;
       }
     }
 
-    /* Added: Debug visibility toggle (remove after testing) */
-    body.debug .hidden {
-      visibility: visible !important;
-      opacity: 1 !important;
-    }
-
     /* Header */
     .header {
       position: fixed;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100%;
       padding: 1.2rem 5%;
       background: rgba(0, 0, 0, .15);
@@ -184,27 +145,13 @@
       align-items: center;
       transition: all .4s ease;
       transform: translateY(-100%);
-      will-change: transform;
-      contain: layout style;
     }
 
-    .header.show {
-      transform: translateY(0);
-    }
+    .header.show { transform: translateY(0); }
 
-    .logo {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: #fff;
-      opacity: 0;
-      animation: fadeIn .8s ease forwards .3s;
-      will-change: opacity;
-    }
+    .logo { font-size: 1.75rem; font-weight: 700; color: #fff; opacity: 0; animation: fadeIn .8s ease forwards .3s; }
 
-    .navbar {
-      display: flex;
-      gap: 2.5rem;
-    }
+    .navbar { display: flex; gap: 2.5rem; }
 
     .navbar a {
       position: relative;
@@ -217,7 +164,6 @@
       opacity: 0;
       animation: fadeIn .6s ease forwards;
       animation-delay: calc(.1s * var(--i));
-      will-change: opacity, color;
     }
 
     .navbar a::before {
@@ -230,51 +176,18 @@
       opacity: 0;
       transition: opacity .4s;
       z-index: -1;
-      will-change: opacity;
     }
 
-    .navbar a:hover {
-      color: #fff;
-    }
+    .navbar a:hover { color: #fff; }
+    .navbar a:hover::before { opacity: 1; }
+    .navbar a.active { color: #07e6da; font-weight: 600; }
 
-    .navbar a:hover::before {
-      opacity: 1;
-    }
+    .hamburger { display: none; cursor: pointer; z-index: 1001; }
+    .hamburger span { display: block; width: 25px; height: 3px; background: #fff; margin: 5px auto; transition: all .3s ease; border-radius: 2px; }
 
-    .navbar a.active {
-      color: #07e6da;
-      font-weight: 600;
-    }
-
-    /* Hamburger */
-    .hamburger {
-      display: none;
-      cursor: pointer;
-      z-index: 1001;
-    }
-
-    .hamburger span {
-      display: block;
-      width: 25px;
-      height: 3px;
-      background: #fff;
-      margin: 5px auto;
-      transition: all .3s ease;
-      border-radius: 2px;
-      will-change: transform, opacity;
-    }
-
-    .hamburger.active span:nth-child(1) {
-      transform: rotate(45deg) translate(5px, 5px);
-    }
-
-    .hamburger.active span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .hamburger.active span:nth-child(3) {
-      transform: rotate(-45deg) translate(7px, -6px);
-    }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -6px); }
 
     @media(max-width:992px) {
       .navbar {
@@ -291,21 +204,9 @@
         gap: 2rem;
         transition: right .4s ease;
         z-index: 999;
-        will-change: right;
-        contain: layout;
       }
-
-      .navbar.active {
-        right: 0;
-      }
-
-      .hamburger {
-        display: block;
-      }
-
-      .header {
-        padding: 1.2rem 5%;
-      }
+      .navbar.active { right: 0; }
+      .hamburger { display: block; }
     }
 
     /* Home */
@@ -313,65 +214,26 @@
       min-height: 100vh;
       display: flex;
       align-items: center;
+      justify-content: center;
       padding: 6rem 5% 4rem;
       gap: 3rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      position: relative;
-      contain: layout paint;
-      /* Added: Extra safety for small screens */
       min-height: 100dvh;
     }
 
-    .home-content {
-      max-width: 600px;
-      text-align: center;
-      flex: 1;
-      z-index: 2;
-    }
+    .home-content { max-width: 600px; text-align: center; z-index: 2; }
 
-    .home-content h3,
-    .home-content h1,
-    .home-content p,
-    .home-sci a,
-    .btn-box {
+    .home-content h3, .home-content h1, .home-content p, .home-sci a, .btn-box {
       opacity: 0;
       transform: translateY(30px);
-      will-change: opacity, transform;
     }
 
-    .home-content h3 {
-      font-size: 2rem;
-      animation: slideUp 1s ease forwards .7s;
-    }
+    .home-content h3 { font-size: 2rem; animation: slideUp 1s ease forwards .7s; }
+    .home-content h3:nth-of-type(2) { margin-bottom: 1.8rem; animation: slideUp 1s ease forwards .9s; }
+    .home-content h1 { font-size: 3.2rem; margin: .2rem 0; animation: slideUp 1s ease forwards 1.1s; }
+    .home-content span { color: #07e6da; }
+    .home-content p { font-size: 1rem; animation: slideUp 1s ease forwards 1.3s; margin: 1.2rem 0; }
 
-    .home-content h3:nth-of-type(2) {
-      margin-bottom: 1.8rem;
-      animation: slideUp 1s ease forwards .9s;
-    }
-
-    .home-content h1 {
-      font-size: 3.2rem;
-      margin: .2rem 0;
-      animation: slideUp 1s ease forwards 1.1s;
-    }
-
-    .home-content span {
-      color: #07e6da;
-    }
-
-    .home-content p {
-      font-size: 1rem;
-      animation: slideUp 1s ease forwards 1.3s;
-      margin: 1.2rem 0;
-    }
-
-    .home-sci {
-      margin: 1.8rem 0;
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-    }
+    .home-sci { margin: 1.8rem 0; display: flex; justify-content: center; gap: 1rem; }
 
     .home-sci a {
       display: inline-flex;
@@ -386,22 +248,11 @@
       animation: fadeIn 1s ease forwards;
       animation-delay: calc(.1s * var(--i));
       transition: transform .3s ease, background .3s ease, color .3s ease;
-      will-change: transform, background , color;
     }
 
-    .home-sci a:hover {
-      background: #07e6da;
-      color: #000;
-      transform: scale(1.1);
-      box-shadow: 0 0 20px #07e6da;
-    }
+    .home-sci a:hover { background: #07e6da; color: #000; transform: scale(1.1); box-shadow: 0 0 20px #07e6da; }
 
-    /* ==== NEW WRAPPER TO CENTER BUTTON ==== */
-    .btn-wrapper {
-      display: flex;
-      justify-content: center;
-      margin-top: 1.5rem;
-    }
+    .btn-wrapper { display: flex; justify-content: center; margin-top: 2.5rem; }
 
     .btn-box {
       display: inline-block;
@@ -415,17 +266,10 @@
       animation: slideUp 1s ease forwards 2s;
       box-shadow: 0 0 10px #07e6da, 0 0 25px #4101f0;
       transition: transform .3s ease, box-shadow .3s ease;
-      will-change: transform, box-shadow;
-      margin-top: 16px;
-      transform: translateZ(0);
     }
 
-    .btn-box:hover {
-      box-shadow: 0 0 20px #b907e6, 0 0 40px #b907e6, 0 0 60px #b907e6;
-      transform: translateY(-5px) scale(1.05);
-    }
+    .btn-box:hover { box-shadow: 0 0 20px #b907e6, 0 0 40px #b907e6, 0 0 60px #b907e6; transform: translateY(-5px) scale(1.05); }
 
-    /* Profile Photo */
     .profile-photo {
       width: 290px;
       height: 290px;
@@ -433,44 +277,17 @@
       overflow: hidden;
       border: 4px solid rgba(99, 7, 247, .9);
       box-shadow: 0 0 25px rgba(7, 247, 235, .6);
-      transform: 6.4s  !important;
       animation: float 6s ease-in-out infinite;
       z-index: 2;
       flex-shrink: 0;
       margin: 1.2rem auto;
-      will-change: transform, box-shadow;
-      contain: strict;
-      /* Added: Fallback if image fails */
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
 
+    .profile-photo:hover { animation: float 7s ease-in-out infinite, pulse 2s ease-in-out infinite; box-shadow: 0 0 40px rgba(99, 7,247,.9), 0 0 60px rgba(0,222,252,.8); transform: scale(1.05); }
 
-    /* Hover pulse – also slowed down a bit for elegance */
-.profile-photo:hover {
-    animation: float 7s ease-in-out infinite, pulse 2s ease-in-out infinite !important;
-    box-shadow: 0 0 40px rgba(99, 7,247,.9), 0 0 60px rgba(0,222,252,.8);
-    transform: translateZ(0) scale(1.05) !important;
-}
-
-/* Mobile-specific: make it even calmer and perfectly smooth */
-@media (max-width: 768px) {
-    .profile-photo {
-        width: 240px;
-        height: 240px;
-        animation: float 9s ease-in-out infinite !important;  /* Much calmer on mobile */
-    }
-    .profile-photo:hover {
-        animation: float 9s ease-in-out infinite, pulse 2.4s ease-in-out infinite !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .profile-photo {
-        width: 200px;
-        height: 200px;
-        animation: float 10s ease-in-out infinite !important; /* Super calm on small phones */
-    }
-}
+    @media (max-width: 768px) { .profile-photo { width: 240px; height: 240px; } }
+    @media (max-width: 480px) { .profile-photo { width: 200px; height: 200px; } }
 
     /* About */
     .about {
@@ -481,47 +298,15 @@
       padding: 6rem 5% 4rem;
       gap: 2rem;
       text-align: center;
-      contain: layout paint;
-      /* Added: Safety min-height */
       min-height: 100dvh;
     }
 
-    .about-text {
-      max-width: 600px;
-      margin: auto;
-    }
+    .about-text { max-width: 600px; margin: auto; }
 
-    .about-text h2,
-    .about-text h4,
-    .about-text p,
-    .about-btn-box {
-      opacity: 0;
-      transform: translateY(20px);
-      will-change: opacity, transform;
-    }
-
-    .about-text h2 {
-      font-size: 3rem;
-      margin-bottom: .6rem;
-      animation: slideUp 1s ease forwards .5s;
-    }
-
-    .about-text h2 span {
-      color: #07e6da;
-    }
-
-    .about-text h4 {
-      font-size: 1.75rem;
-      margin: 1rem 0;
-      animation: slideUp 1s ease forwards .7s;
-    }
-
-    .about-text p {
-      font-size: 1rem;
-      color: #e0e0e0;
-      margin-bottom: 1.8rem;
-      animation: slideUp 1s ease forwards .9s;
-    }
+    .about-text h2 { font-size: 3rem; margin-bottom: .6rem; animation: slideUp 1s ease forwards .5s; }
+    .about-text h2 span { color: #07e6da; }
+    .about-text h4 { font-size: 1.75rem; margin: 1rem 0; animation: slideUp 1s ease forwards .7s; }
+    .about-text p { font-size: 1rem; color: #e0e0e0; margin-bottom: 1.8rem; animation: slideUp 1s ease forwards .9s; }
 
     .about-btn-box {
       display: inline-block;
@@ -532,43 +317,20 @@
       font-weight: 600;
       letter-spacing: 1px;
       box-shadow: 0 0 10px #07e6da, 0 0 25px #4101f0;
-      transition: .3s;
       animation: slideUp 1s ease forwards 1.1s;
-      will-change: transform, box-shadow;
-      transform: translateZ(0);
     }
 
-    .about-btn-box:hover {
-      box-shadow: 0 0 20px #b907e6, 0 0 40px #b907e6, 0 0 60px #b907e6;
-      transform: translateY(-5px) scale(1.05);
-    }
+    .about-btn-box:hover { box-shadow: 0 0 20px #b907e6, 0 0 40px #b907e6, 0 0 60px #b907e6; transform: translateY(-5px) scale(1.05); }
 
     /* Services */
-    .services {
-      padding: 6rem 5%;
-      text-align: center;
-      background: rgba(0, 0, 0, .7);
-      backdrop-filter: blur(10px);
-    }
+    .services { padding: 6rem 5%; text-align: center; }
 
-    .sub-title {
-      font-size: 3.75rem;
-      margin-bottom: 4rem;
-      color: #fff;
-    }
+    .sub-title { font-size: 3.75rem; margin-bottom: 4rem; color: #fff; }
+    .sub-title span { color: #920df6; }
 
-    .sub-title span {
-      color: #920df6;
-    }
+    .services-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem; margin-top: 3rem; }
 
-    .services-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2.5rem;
-      margin-top: 3rem;
-    }
-
-    .services-list>div {
+    .services-list > div {
       background: rgba(255, 255, 255, .05);
       padding: 2.5rem;
       border-radius: 25px;
@@ -576,35 +338,18 @@
       transition: transform .5s ease, background .5s ease, border-color .5s ease;
       backdrop-filter: blur(5px);
       text-align: left;
-      will-change: transform, background, border-color;
-      transform: translateZ(0);
-      contain: layout paint;
     }
 
-    .services-list>div:hover {
+    .services-list > div:hover {
       transform: translateY(-15px) scale(1.03);
       background: rgba(146, 13, 246, .1);
       border-color: #920df6;
       box-shadow: 0 10px 30px rgba(146, 13, 246, .4);
     }
 
-    .services-list i {
-      font-size: 3.1rem;
-      color: #920df6;
-      margin-bottom: 1.2rem;
-      display: block;
-    }
-
-    .services-list h2 {
-      font-size: 1.75rem;
-      margin-bottom: .9rem;
-      color: #fff;
-    }
-
-    .services-list p {
-      font-size: .94rem;
-      color: #ddd;
-    }
+    .services-list i { font-size: 3.1rem; color: #920df6; margin-bottom: 1.2rem; display: block; }
+    .services-list h2 { font-size: 1.75rem; margin-bottom: .9rem; color: #fff; }
+    .services-list p { font-size: .94rem; color: #ddd; }
 
     .read {
       display: inline-block;
@@ -619,67 +364,23 @@
       animation: fadeIn 1s ease forwards 1.8s;
       box-shadow: 0 0 5px #07e6da, 0 0 25px #4101f0;
       transition: .3s;
-      will-change: opacity, box-shadow;
     }
 
-    .read:hover {
-      box-shadow: 0 0 25px #07e6da, 0 0 33px #07e6da;
-    }
+    .read:hover { box-shadow: 0 0 25px #07e6da, 0 0 33px #07e6da; }
 
-  /* Skills */
+    /* Skills */
+    .skills { padding: 7.5rem 5%; }
 
- 
-    .skills {
-      padding: 7.5rem 5%;
-      background: rgba(0, 0, 0, .8);
-      backdrop-filter: blur(10px);
-    }
+    .skills-container { display: flex; justify-content: center; gap: 3.75rem; flex-wrap: wrap; max-width: 1200px; margin: auto; }
 
-    .skills-container {
-      display: flex;
-      justify-content: center;
-      gap: 3.75rem;
-      flex-wrap: wrap;
-      max-width: 1200px;
-      margin: auto;
-    }
+    .skills-column { flex: 1; min-width: 300px; }
 
-    .skills-column {
-      flex: 1;
-      min-width: 300px;
-    }
+    .heading1 { text-align: center; font-size: 2.25rem; margin-bottom: 2.5rem; text-decoration: underline; text-decoration-thickness: 4px; text-underline-offset: 8px; color: #fff; }
 
-    .heading1 {
-      text-align: center;
-      font-size: 2.25rem;
-      margin-bottom: 2.5rem;
-      text-decoration: underline;
-      text-decoration-thickness: 4px;
-      text-underline-offset: 8px;
-      color: #fff;
-    }
-
-    .Technical-bars .bar {
-      margin: 1.5rem 0;
-    }
-
-    .Technical-bars .bar .info {
-      display: flex;
-      align-items: center;
-      margin-bottom: .5rem;
-    }
-
-    .Technical-bars .bar .info i {
-      margin-right: .6rem;
-      font-size: 1.5rem;
-    }
-
-    .Technical-bars .bar .info span {
-      font-size: 1.1rem;
-      font-weight: 500;
-      opacity: 0;
-      animation: fadeIn .5s 1s linear forwards;
-    }
+    .Technical-bars .bar { margin: 1.5rem 0; }
+    .Technical-bars .bar .info { display: flex; align-items: center; margin-bottom: .5rem; }
+    .Technical-bars .bar .info i { margin-right: .6rem; font-size: 1.5rem; }
+    .Technical-bars .bar .info span { font-size: 1.1rem; font-weight: 500; opacity: 0; animation: fadeIn .5s 1s linear forwards; }
 
     .Technical-bars .bar .progress-line {
       position: relative;
@@ -688,8 +389,7 @@
       border-radius: 10px;
       transform: scaleX(0);
       transform-origin: left;
-      animation: animate 1s cubic-bezier(1, 0, .5, 1) forwards  ;
-      will-change: transform;
+      animation: animate 1s cubic-bezier(1, 0, .5, 1) forwards;
     }
 
     .Technical-bars .bar .progress-line span {
@@ -699,10 +399,8 @@
       border-radius: 10px;
       transform: scaleX(0);
       transform-origin: left;
-      will-change: transform;
     }
 
-    /* THIS IS THE KEY FIX — your original animation now works perfectly */
     .progress-line.html span { width: 90%; animation: fillBar 2s 1s ease forwards; }
     .progress-line.css span { width: 80%; animation: fillBar 2s 1.1s ease forwards; }
     .progress-line.php span { width: 70%; animation: fillBar 2s 1.2s ease forwards; }
@@ -711,9 +409,7 @@
     .progress-line.flutter span { width: 85%; animation: fillBar 2s 1.5s ease forwards; }
     .progress-line.react span { width: 60%; animation: fillBar 2s 1.6s ease forwards; }
 
-    @keyframes fillBar {
-      to { transform: scaleX(1); }
-    }
+    @keyframes fillBar { to { transform: scaleX(1); } }
 
     .progress-line span::after {
       content: attr(data-percent);
@@ -739,98 +435,28 @@
       opacity: 0;
       animation: fadeIn .5s 2.8s linear forwards;
     }
-    /* Radial Bars */
-    .radial-bars {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1.8rem;
-    }
 
-    .radial-bar {
-      width: 140px;
-      height: 160px;
-      position: relative;
-      text-align: center;
-    }
+    .radial-bars { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.8rem; }
 
-    .radial-bar svg {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-90deg);
-      width: 110px;
-      height: 110px;
-    }
+    .radial-bar { width: 140px; height: 160px; position: relative; text-align: center; }
 
-    .progress-bar {
-      fill: none;
-      stroke: #333;
-      stroke-width: 10;
-    }
+    .radial-bar svg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-90deg); width: 110px; height: 110px; }
 
-    .path {
-      fill: none;
-      stroke: #5f0df6;
-      stroke-width: 10;
-      stroke-linecap: round;
-      stroke-dasharray: 502;
-      stroke-dashoffset: 502;
-      animation: animate-bar 2s linear forwards;
-      will-change: stroke-dashoffset;
-    }
+    .progress-bar { fill: none; stroke: #333; stroke-width: 10; }
+    .path { fill: none; stroke: #5f0df6; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 502; stroke-dashoffset: 502; animation: animate-bar 2s linear forwards; }
 
-    .path-1 {
-      animation: animate-path1 2s 1s linear forwards;
-    }
+    .path-1 { animation: animate-path1 2s 1s linear forwards; }
+    .path-2 { animation: animate-path2 2s 1s linear forwards; }
+    .path-3 { animation: animate-path3 2s 1s linear forwards; }
+    .path-4 { animation: animate-path4 2s 1s linear forwards; }
 
-    .path-2 {
-      animation: animate-path2 2s 1s linear forwards;
-    }
+    @keyframes animate-bar { to { stroke-dashoffset: 0; } }
+    @keyframes animate-path1 { to { stroke-dashoffset: 50; } }
+    @keyframes animate-path2 { to { stroke-dashoffset: 150; } }
+    @keyframes animate-path3 { to { stroke-dashoffset: 175; } }
+    @keyframes animate-path4 { to { stroke-dashoffset: 75; } }
 
-    .path-3 {
-      animation: animate-path3 2s 1s linear forwards;
-    }
-
-    .path-4 {
-      animation: animate-path4 2s 1s linear forwards;
-    }
-
-    @keyframes animate-bar {
-      to {
-        stroke-dashoffset: 0;
-      }
-    }
-
-    @keyframes animate-path1 {
-      to {
-        stroke-dashoffset: 50;
-      }
-    }
-
-    @keyframes animate-path2 {
-      to {
-        stroke-dashoffset: 150;
-      }
-    }
-
-    @keyframes animate-path3 {
-      to {
-        stroke-dashoffset: 175;
-      }
-    }
-
-    @keyframes animate-path4 {
-      to {
-        stroke-dashoffset: 75;
-      }
-    }
-
-    .radial-bar .percentage,
-    .radial-bar .text {
-      opacity: 0;
-      will-change: opacity;
-    }
+    .radial-bar .percentage, .radial-bar .text { opacity: 0; }
 
     .radial-bar .percentage {
       position: absolute;
@@ -852,9 +478,7 @@
       animation: fadeIn .5s 1s linear forwards;
     }
 
-
-    /* FIXED: Responsive & Clean Overlay Text */
-    /* ======================== PORTFOLIO OVERLAY – FIXED & FULLY RESPONSIVE ======================== */
+    /* Portfolio */
     .portfolio-content {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -868,7 +492,6 @@
       border-radius: 16px;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
       aspect-ratio: 1 / 1;
-      /* Keeps consistent height */
       transition: transform 2.4s ease;
     }
 
@@ -877,11 +500,10 @@
       height: 100%;
       object-fit: cover;
       transition: transform 2.4s ease;
+      animation: autoZoom 14s ease-in-out infinite alternate;
     }
 
-    .row:hover img {
-      transform: scale(2.08);
-    }
+    .row:hover img { transform: scale(1.9); animation-play-state: paused; }
 
     .row .layer {
       position: absolute;
@@ -896,134 +518,40 @@
       color: #fff;
     }
 
-    .row:hover .layer {
-      transform: translateY(0);
+    .row:hover .layer { transform: translateY(0); }
+
+    @keyframes autoZoom {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.22); }
+      100% { transform: scale(1.08); }
     }
 
-    /* ======================== AUTO ZOOM IN/OUT ON HOVER (NO CLICK) ======================== */
-    /* ==================== FIX 2: PORTFOLIO IMAGE ZOOM IN/OUT (LATEST PROJECT) ==================== */
-    /* Remove conflicting transform & animation overrides */
-.row img {
-    animation: none !important;                    /* Disable broken autoZoom */
-    transform: scale(1) !important;                /* Reset base scale */
-    transition: transform 8s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-}
-
-/* Smooth continuous auto zoom (background subtle effect) */
-.row img {
-    animation: autoZoom 14s ease-in-out infinite alternate !important;
-}
-
-/* Stronger, faster zoom on hover */
-.row:hover img {
-    animation: hoverZoomIn 5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
-    transform: scale(1.9) !important;
-}
-
-/* Pause auto animation when hovering so hover zoom feels intentional */
-.row:hover img {
-    animation-play-state: paused !important;
-}
-
-/* Keep card lift effect */
-.row:hover {
-    transform: translateY(-12px) scale(1.02) !important;
-}
-
-/* Ensure keyframes are not overridden */
-@keyframes autoZoom {
-    0%   { transform: scale(1); }
-    50%  { transform: scale(1.22); }
-    100% { transform: scale(1.08); }
-}
-
-@keyframes hoverZoomIn {
-    0%   { transform: scale(1); }
-    100% { transform: scale(1.9); }
-}
-
-    /* Optional: Pause auto zoom when hovering (feels more intentional) */
-    .row:hover img {
-      animation-play-state: paused;
-    }
-
-
-
-    /* Title – Clean & Consistent */
     .layer h1 {
-      position: relative;
-      /* Needed for pseudo-element */
-      display: inline-block;
-      /* Makes background hug the text */
-      font-size: clamp(1.6rem, 2rem, 2.2rem) !important;
+      font-size: clamp(1.6rem, 2rem, 2.2rem);
       font-weight: 550;
-      /* Real bold (better than font-style: bold) */
-      line-height: 1.3;
-      color: #ffffff;
-      margin-bottom: 24rem !important;
-      /* Clean spacing */
-      z-index: 1;
-
-      /* Beautiful tight background that follows only the text */
+      margin-bottom: 25rem;
       background: linear-gradient(135deg, rgba(0, 0, 0, 0.25) 20%, rgba(0, 0, 0, 0.25) 80%);
       backdrop-filter: blur(10px);
       border-radius: 25px;
       border: 1px solid rgba(0, 0, 0, 0.3);
-
-      /* Optional: subtle inner glow */
       box-shadow: 0 4px 15px rgb(0, 0, 0), inset 0 1px 1px rgb(0, 0, 0);
-
-      /* GPU acceleration for smooth hover */
       transform: translateZ(0);
       transition: all 0.8s ease;
-
     }
 
     .layer h2 {
-      position: relative;
-      /* Needed for pseudo-element */
-      display: inline-block;
-      /* Makes background hug the text */
-      font-size: clamp(1.3rem, 3rem, 2.2rem) !important;
+      font-size: clamp(1.3rem, 3rem, 2.2rem);
       font-weight: 550;
-      /* Real bold (better than font-style: bold) */
-      line-height: 1.3;
-      color: #ffffff;
-      margin-bottom: 2rem !important;
-      /* Clean spacing */
-      z-index: 1;
-
-      /* Beautiful tight background that follows only the text */
+      margin-bottom: 2rem;
       background: linear-gradient(135deg, rgba(0, 0, 0, 0.25) 20%, rgba(0, 0, 0, 0.25) 80%);
       backdrop-filter: blur(10px);
       border-radius: 25px;
       border: 1px solid rgba(0, 0, 0, 0.3);
-
-      /* Optional: subtle inner glow */
       box-shadow: 0 4px 15px rgb(0, 0, 0), inset 0 1px 1px rgb(0, 0, 0);
-
-      /* GPU acceleration for smooth hover */
       transform: translateZ(0);
       transition: all 0.8s ease;
-
     }
 
-    /* Optional: Hover effect – makes it pop a little */
-    .layer:hover h1 {
-      transform: translateY(0) scale(0.80);
-      box-shadow: 0 8px 25px rgba(7, 230, 218, 0.3), inset 0 1px 3px rgba(255, 255, 255, 0.2);
-      background: linear-gradient(135deg, rgb(0, 0, 0, 0) 0%, rgb(0, 0, 0) 100%);
-
-    }
-
-    .layer:hover h2 {
-      transform: translateY(0) scale(0.70);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.979), inset 0 1px 3px rgb(0, 0, 0);
-      background: linear-gradient(135deg, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 100%);
-
-    }
-
-    /* Description */
     .layer p {
       font-size: clamp(0.85rem, 2rem, 0.95rem);
       line-height: 1.5;
@@ -1031,7 +559,6 @@
       opacity: 0.95;
     }
 
-    /* Link Icon – Bottom Right */
     .layer a {
       position: absolute;
       bottom: 1.8rem;
@@ -1042,74 +569,36 @@
       z-index: 2;
     }
 
-    .layer a:hover {
-      color: #fff;
-      transform: scale(1.2);
-      text-shadow: 0 0 15px #07e6da;
-    }
+    .layer a:hover { color: #fff; transform: scale(1.2); text-shadow: 0 0 15px #07e6da; }
 
-    /* Mobile Adjustments */
     @media (max-width: 768px) {
-      .portfolio-content {
-        gap: 1rem;
-      }
-
-      .layer {
-        padding: 1.5rem;
-      }
-
-      .layer a {
-        bottom: 1.5rem;
-        right: 1.5rem;
-        font-size: 1.8rem;
-      }
+      .portfolio-content { gap: 1rem; }
+      .layer { padding: 1.5rem; }
+      .layer a { bottom: 1.5rem; right: 1.5rem; font-size: 1.8rem; }
     }
 
     @media (max-width: 480px) {
-      .layer {
-        padding: 1.2rem;
-      }
-
-      .layer h1 {
-        margin-bottom: 0.95rem;
-      }
-
-      .layer p {
-        margin-bottom: 0rem;
-        font-size: 0.82rem;
-      }
+      .layer { padding: 1.2rem; }
+      .layer h1 { margin-bottom: 24rem; }
+      .layer p { margin-bottom: 0rem; font-size: 0.82rem; }
     }
 
     /* Contact */
     .contact {
       padding: 7.5rem 5%;
-      background: url(Bg02.jpg) center/cover no-repeat fixed;
-      backdrop-filter: blur(10px);
       text-align: center;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      /* Added: Fallback */
-      background-color: #000;
     }
 
-    .contact-form {
-      max-width: 700px;
-      width: 100%;
-      margin: 2rem auto;
-    }
+    .contact-form { max-width: 700px; width: 100%; margin: 2rem auto; }
 
-    .input-box {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
+    .input-box { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
 
-    .input-box input,
-    .contact-form textarea {
+    .input-box input, .contact-form textarea {
       width: 100%;
       padding: 1rem;
       border-radius: 12px;
@@ -1121,11 +610,7 @@
       transition: background .3s ease;
     }
 
-    .contact-form textarea {
-      grid-column: 1/-1;
-      resize: none;
-      height: 150px;
-    }
+    .contact-form textarea { grid-column: 1/-1; resize: none; height: 150px; }
 
     .contact-btn {
       padding: 1rem 2.5rem;
@@ -1137,191 +622,75 @@
       cursor: pointer;
       transition: .3s;
       margin-top: 1rem;
-      will-change: transform, background;
     }
 
-    .contact-btn:hover {
-      background: #a07ee0;
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 0 20px #b907e6;
-    }
+    .contact-btn:hover { background: #a07ee0; transform: translateY(-3px) scale(1.05); box-shadow: 0 0 20px #b907e6; }
 
-    .contact-info {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-      margin-top: 3rem;
-    }
+    .contact-info { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin-top: 3rem; }
 
-    .info-item i {
-      font-size: 1.5rem;
-      color: #07e6da;
-      margin-bottom: .5rem;
-    }
+    .info-item i { font-size: 1.5rem; color: #07e6da; margin-bottom: .5rem; }
 
     /* Animations */
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes float { 0%, 100% { transform: translateY(-8px); } 50% { transform: translateY(8px); } }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+    @keyframes animate { to { transform: scaleX(1); } }
 
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    /* Mobile Fixes */
+    @media (max-width: 992px) {
+      .home { flex-direction: column; text-align: center; padding: 7rem 5% 4rem; }
+      .home-content h1 { font-size: 2.8rem; }
+      .home-content h3 { font-size: 1.8rem; }
+      .profile-photo { order: -1; margin-bottom: 2rem; }
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
+    @media (max-width: 768px) {
+      h1 { font-size: 2.6rem; }
+      h2 { font-size: 2.4rem; }
+      .sub-title { font-size: 3rem; }
+      .home-content h1 { font-size: 2.5rem; }
+      .home-content h3 { font-size: 1.6rem; }
+      .about-text h2 { font-size: 2.6rem; }
+      .about-text h4 { font-size: 1.6rem; }
+      .services-list > div { padding: 2rem; }
     }
 
-    @keyframes float {
-
-      0%,
-      100% {
-        transform: translateY(-8px);
-      }
-
-      50% {
-        transform: translateY(8px);
-      }
+    @media (max-width: 600px) {
+      .home { padding: 6rem 5% 3rem; }
+      .home-content h1 { font-size: 2.3rem; }
+      .home-content h3 { font-size: 1.4rem; }
+      .home-content p { font-size: 0.95rem; }
+      .sub-title { font-size: 2.5rem; }
+      .input-box { grid-template-columns: 1fr; }
+      .portfolio-content { margin: 20px 10px; gap: 1rem; }
     }
 
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.08);
-      }
-
-      100% {
-        transform: scale(1);
-      }
+    @media (max-width: 480px) {
+      .logo { font-size: 1.5rem; }
+      .home-content h1 { font-size: 2.1rem; }
+      .home-content h3 { font-size: 1.3rem; }
+      .btn-box, .about-btn-box { padding: 0.7rem 1.5rem; font-size: 0.95rem; }
+      .services-list > div { padding: 1.5rem; }
+      .services-list i { font-size: 2.5rem; }
+      .services-list h2 { font-size: 1.5rem; }
     }
 
-    @keyframes animate {
-      to {
-        transform: scaleX(1);
-      }
-    }
-
-    /* Responsive - Added extra for ultra-small devices */
-    @media(max-width:992px) {
-      .header {
-        padding: 1.2rem 5%;
-      }
-
-      .home,
-      .about {
-        padding: 5rem 5% 4rem;
-      }
-
-      .home-content h1 {
-        font-size: 2.8rem;
-      }
-
-      .home-content h3 {
-        font-size: 1.6rem;
-      }
-
-      .profile-photo {
-        width: 240px;
-        height: 240px;
-      }
-
-      .skills-container {
-        gap: 2.5rem;
-      }
-
-      .heading1 {
-        font-size: 2rem;
-      }
-    }
-
-    @media(max-width:600px) {
-
-      .home,
-      .about {
-        padding: 4.5rem 5% 3rem;
-      }
-
-      .home-content h1 {
-        font-size: 2.3rem;
-      }
-
-      .home-content h3 {
-        font-size: 1.4rem;
-      }
-
-      .profile-photo {
-        width: 200px;
-        height: 200px;
-      }
-
-      .sub-title {
-        font-size: 2.5rem;
-      }
-
-      .input-box {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Added: For very small viewports (e.g., iPhone SE) */
     @media (max-width: 320px) {
-
-      .home,
-      .about,
-      .services,
-      .skills,
-      .portfolio,
-      .contact {
-        padding-left: 2%;
-        padding-right: 2%;
-      }
-
-      /* Header */
-    .header { position:fixed;top:0;left:0;width:100%;padding:1.2rem 5%;background:rgba(0,0,0,.15);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.1);z-index:1000;display:flex;justify-content:space-between;align-items:center;transition:all .4s ease;transform:translateY(-100%); }
-    .header.show { transform:translateY(0); }
-    .logo { font-size:1.75rem;font-weight:700;color:#fff;opacity:0;animation:fadeIn .8s ease forwards .3s; }
-    .navbar { display:flex;gap:2.5rem; }
-    .navbar a { position:relative;font-size:1.2rem;color:#ece2e2;font-weight:500;padding:.5rem 1.2rem;border-radius:50px;overflow:hidden;opacity:0;animation:fadeIn .6s ease forwards;animation-delay:calc(.1s * var(--i)); }
-    .navbar a::before { content:"";position:absolute;inset:0;background:rgba(7,247,235,.15);backdrop-filter:blur(8px);border-radius:50px;opacity:0;transition:opacity .4s;z-index:-1; }
-    .navbar a:hover { color:#fff; }
-    .navbar a:hover::before { opacity:1; }
-    .navbar a.active { color:#07e6da;font-weight:600; }
-
-      body {
-        font-size: 0.9rem;
-      }
+      body { font-size: 0.9rem; }
+      .home, .about, .services, .skills, .portfolio, .contact { padding-left: 3%; padding-right: 3%; }
     }
-@keyframes fadeIn { from{opacity:0} to{opacity:1} }
-    @keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
-
   </style>
 </head>
 
 <body>
-<!-- NEW BACKGROUND VIDEO (the only thing changed) -->
+  <!-- Full-screen video background -->
   <div class="video-background">
-    <div class="video-foreground">
-      <iframe 
-        src="https://www.youtube.com/embed/Q6eV34RDMec?autoplay=1&mute=1&loop=1&playlist=Q6eV34RDMec&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&start=75"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen>
-      </iframe>
-    </div>
+    <video autoplay muted loop playsinline poster="Bg02.jpg">
+      <!-- Replace "Bg.mp4" with your exact video filename if different -->
+      <source src="Bg.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
   </div>
 
   <!-- HEADER -->
@@ -1348,19 +717,13 @@
         and mobile application frameworks. Passionate about crafting intuitive, high-performance digital solutions
         with a focus on user experience and functionality.</p>
       <div class="home-sci">
-        <a href="https://facebook.com" style="--i:6" target="_blank" aria-label="Facebook"><i
-            class='bx bxl-facebook-circle'></i></a>
-        <a href="https://instagram.com" style="--i:7" target="_blank" aria-label="Instagram"><i
-            class='bx bxl-instagram'></i></a>
-        <a href="https://wa.me/919638824768" style="--i:8" target="_blank" aria-label="WhatsApp"><i
-            class='bx bxl-whatsapp'></i></a>
-        <a href="https://twitter.com" style="--i:9" target="_blank" aria-label="Twitter"><i
-            class='bx bxl-twitter'></i></a>
-        <a href="https://linkedin.com" style="--i:10" target="_blank" aria-label="LinkedIn"><i
-            class='bx bxl-linkedin'></i></a>
+        <a href="https://facebook.com" style="--i:6" target="_blank" aria-label="Facebook"><i class='bx bxl-facebook-circle'></i></a>
+        <a href="https://instagram.com" style="--i:7" target="_blank" aria-label="Instagram"><i class='bx bxl-instagram'></i></a>
+        <a href="https://wa.me/919638824768" style="--i:8" target="_blank" aria-label="WhatsApp"><i class='bx bxl-whatsapp'></i></a>
+        <a href="https://twitter.com" style="--i:9" target="_blank" aria-label="Twitter"><i class='bx bxl-twitter'></i></a>
+        <a href="https://linkedin.com" style="--i:10" target="_blank" aria-label="LinkedIn"><i class='bx bxl-linkedin'></i></a>
       </div>
 
-      <!-- CENTERED BUTTON WRAPPER -->
       <div class="btn-wrapper">
         <a href="#about" class="btn-box">More About Me</a>
       </div>
@@ -1370,7 +733,6 @@
   <!-- ABOUT -->
   <section class="about" id="about">
     <div class="profile-photo">
-      <!-- Added: onerror fallback -->
       <img src="PG.jpg" alt="Prit Ghodasara Profile" loading="lazy"
         onerror="this.classList.add('failed'); this.alt='Profile Image Unavailable - Prit Ghodasara';" />
     </div>
@@ -1383,8 +745,7 @@
         showcasing adaptability and a commitment to mastering emerging technologies. Strong analytical mindset with a
         collaborative spirit, ready to contribute innovative ideas and technical expertise to forward-thinking
         development teams.</p>
-      <a href="Prit Resume.pdf" download="Prit_Ghodasara_Resume.pdf" class="about-btn-box" target="_blank"
-        rel="noopener">
+      <a href="Prit Resume.pdf" download="Prit_Ghodasara_Resume.pdf" class="about-btn-box" target="_blank" rel="noopener">
         <i class='bx bx-download'></i> Download Resume
       </a>
     </div>
@@ -1426,7 +787,8 @@
       </div>
     </div>
   </section>
-<!-- SKILLS -->
+
+  <!-- SKILLS -->
   <section class="skills" id="skills">
     <div class="skills-container">
       <div class="skills-column">
@@ -1504,7 +866,6 @@
       <h2>Latest <span>Project</span></h2>
       <div class="portfolio-content">
         <div class="row">
-          <!-- Added: onerror for portfolio images -->
           <img src="UI UX.jpg" alt="FitFlow - UI/UX Redesign" loading="fast"
             onerror="this.classList.add('failed'); this.alt='Project Image Unavailable - UI/UX';" />
           <div class="layer">
@@ -1515,8 +876,7 @@
               research—interviews with 40+ fitness enthusiasts and surveys revealing key pain points like overwhelming
               data visualization—I crafted personas, empathy maps, and journey flows to refocus on motivation and
               simplicity.</p>
-            <a href="https://dribbble.com" target="_blank" aria-label="View UI/UX Project"><i
-                class='bx bx-link-external'></i></a>
+            <a href="https://dribbble.com" target="_blank" aria-label="View UI/UX Project"><i class='bx bx-link-external'></i></a>
           </div>
         </div>
         <div class="row">
@@ -1530,8 +890,7 @@
               architecture, Coroutines for seamless background syncing, and Room for offline-first data persistence, I
               integrated real-time workout tracking with Wear OS devices and Google Fit API—ensuring accurate step,
               heart rate, and GPS route capture even in low-connectivity scenarios.</p>
-            <a href="https://play.google.com" target="_blank" aria-label="View App"><i
-                class='bx bx-link-external'></i></a>
+            <a href="https://play.google.com" target="_blank" aria-label="View App"><i class='bx bx-link-external'></i></a>
           </div>
         </div>
         <div class="row">
@@ -1544,8 +903,7 @@
               project workflows and boost productivity. Built with React and TypeScript on the frontend for a dynamic,
               component-driven UI, I integrated Tailwind CSS for rapid, mobile-first styling and Zustand for
               lightweight state management—ensuring seamless real-time updates without performance lag.</p>
-            <a href="https://taskflow.example.com" target="_blank" aria-label="View Web App"><i
-                class='bx bx-link-external'></i></a>
+            <a href="https://taskflow.example.com" target="_blank" aria-label="View Web App"><i class='bx bx-link-external'></i></a>
           </div>
         </div>
       </div>
@@ -1585,171 +943,84 @@
     </div>
   </section>
 
-  <!-- Typed.js + Ultra-Optimized JS (No Jank, 360Hz Ready) -->
   <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
   <script>
-    // Ultra-optimized performance script with error handling
-    console.log('Portfolio Debug: DOM Loaded Starting...'); // Added: Debug log
-
     document.addEventListener("DOMContentLoaded", () => {
-      console.log('Portfolio Debug: DOMContentLoaded Fired'); // Added
+      const header = document.querySelector('.header');
+      if (header) header.classList.add('show');
 
-      // Header reveal with fallback
-      try {
-        requestAnimationFrame(() => {
-          const header = document.querySelector('.header');
-          if (header) {
-            header.classList.add('show');
-            console.log('Portfolio Debug: Header Shown');
-          }
+      const hamburger = document.querySelector('.hamburger');
+      const navbar = document.querySelector('.navbar');
+      if (hamburger && navbar) {
+        hamburger.addEventListener('click', () => {
+          hamburger.classList.toggle('active');
+          navbar.classList.toggle('active');
         });
-      } catch (e) {
-        console.error('Header Error:', e); // Added: Catch
+        document.querySelectorAll('.navbar a').forEach(link => {
+          link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navbar.classList.remove('active');
+          });
+        });
       }
 
-      // Hamburger Menu
-      try {
-        const hamburger = document.querySelector('.hamburger');
-        const navbar = document.querySelector('.navbar');
-        if (hamburger && navbar) {
-          hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navbar.classList.toggle('active');
-          });
-          document.querySelectorAll('.navbar a').forEach(link => {
-            link.addEventListener('click', () => {
-              hamburger.classList.remove('active');
-              navbar.classList.remove('active');
-            });
-          });
-          console.log('Portfolio Debug: Menu Initialized');
-        }
-      } catch (e) {
-        console.error('Menu Error:', e);
+      if (typeof Typed !== 'undefined') {
+        new Typed(".text", {
+          strings: ["iOS Developer", "Android Developer", "Web Developer", "Full Stack Developer"],
+          typeSpeed: 80,
+          backSpeed: 50,
+          backDelay: 1200,
+          loop: true,
+          showCursor: true,
+          cursorChar: '|'
+        });
       }
 
-      // Typed.js with fallback
-      try {
-        if (typeof Typed !== 'undefined') {
-          const typed = new Typed(".text", {
-            strings: ["iOS Developer", "Android Developer", "Web Developer", "Full Stack Developer"],
-            typeSpeed: 80,
-            backSpeed: 50,
-            backDelay: 1200,
-            loop: true,
-            showCursor: true,
-            cursorChar: '|',
-            autoInsertCss: true,
-            onStringTyped: () => requestAnimationFrame(() => { })
-          });
-          console.log('Portfolio Debug: Typed.js Running');
-        } else {
-          // Fallback: Static text
-          document.querySelector('.text').textContent = 'Full Stack Developer';
-          console.warn('Portfolio Debug: Typed.js Failed - Using Fallback');
-        }
-      } catch (e) {
-        console.error('Typed.js Error:', e);
-        document.querySelector('.text').textContent = 'Full Stack Developer'; // Fallback
-      }
-
-      // Skills animation - **NOW PERFECTLY WORKING** (your original way + fixed)
       const animateSkills = () => {
-        document.querySelectorAll('.Technical-bars .progress-line span') .forEach(span => {
+        document.querySelectorAll('.Technical-bars .progress-line span').forEach(span => {
           span.style.width = span.dataset.percent || '90%';
         });
       };
 
       const skillsObserver = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          requestAnimationFrame(animateSkills);
+          animateSkills();
           skillsObserver.unobserve(document.querySelector('.skills'));
         }
       }, { threshold: 0.3 });
 
       const skillsSection = document.querySelector('.skills');
       if (skillsSection) skillsObserver.observe(skillsSection);
-      // Fallback if observer fails
       setTimeout(animateSkills, 2500);
 
-      // EmailJS with fallback (replace with your keys)
-      try {
-        if (typeof emailjs !== 'undefined') {
-          emailjs.init("YOUR_PUBLIC_KEY"); // Replace
-          const form = document.getElementById('contact-form');
-          if (form) {
-            form.addEventListener('submit', function (e) {
-              e.preventDefault();
-              const btn = this.querySelector('.contact-btn');
-              btn.textContent = 'Sending...';
+      document.querySelectorAll('.row').forEach(card => {
+        const h2 = card.querySelector('.layer h2');
+        if (!h2) return;
+        const originalText = h2.textContent.trim();
+        h2.innerHTML = `<span class="typewrite">${originalText}</span>`;
 
-              emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this) // Replace
-                .then(() => {
-                  btn.textContent = 'Sent Successfully!';
-                  this.reset();
-                  setTimeout(() => btn.textContent = 'Send Message', 3000);
-                }, (err) => {
-                  btn.textContent = 'Failed!';
-                  console.error('EmailJS Error:', err);
-                  setTimeout(() => btn.textContent = 'Send Message', 3000);
-                });
-            });
-            console.log('Portfolio Debug: EmailJS Initialized');
-          }
-        } else {
-          console.warn('Portfolio Debug: EmailJS Not Loaded');
-        }
-      } catch (e) {
-        console.error('EmailJS Setup Error:', e);
-      }
+        card.addEventListener('mouseenter', () => {
+          const span = h2.querySelector('.typewrite');
+          span.textContent = '';
+          let i = 0;
+          const type = () => {
+            if (i < originalText.length) {
+              span.textContent += originalText.charAt(i);
+              i++;
+              setTimeout(type, 60 + Math.random() * 40);
+            }
+          };
+          setTimeout(type, 50);
+        });
 
-      // Added: Background fallback check
-      const bgImg = new Image();
-      bgImg.src = 'Bg03.jpg';
-      bgImg.onerror = () => document.body.classList.add('no-bg');
-
-      console.log('Portfolio Debug: All Init Complete'); // End log
-    });
-
-
-    // Passive scroll for buttery smoothness
-    window.addEventListener('wheel', () => { }, { passive: true });
-    window.addEventListener('touchmove', () => { }, { passive: true });
-
-    // Added: Remove debug class after 5s (for clean view)
-    setTimeout(() => document.body.classList.remove('debug'), 5000);
-
-
-    // Auto typing effect on hover (no click needed)
-    document.querySelectorAll('.row').forEach(card => {
-      const h2 = card.querySelector('.layer h2');
-      if (!h2) return;
-
-      const originalText = h2.textContent.trim();
-      h2.innerHTML = `<span class="typewrite">${originalText}</span>`;
-
-      card.addEventListener('mouseenter', () => {
-        const span = h2.querySelector('.typewrite');
-        span.textContent = ''; // Reset
-
-        let i = 0;
-        const type = () => {
-          if (i < originalText.length) {
-            span.textContent += originalText.charAt(i);
-            i++;
-            setTimeout(type, 60 + Math.random() * 40); // Natural typing speed
-          }
-        };
-        setTimeout(type, 50); // Small delay on hover
-      });
-
-      // Optional: Reset on mouse leave (or keep text visible)
-      card.addEventListener('mouseleave', () => {
-        h2.querySelector('.typewrite').textContent = originalText;
+        card.addEventListener('mouseleave', () => {
+          h2.querySelector('.typewrite').textContent = originalText;
+        });
       });
     });
 
+    window.addEventListener('wheel', () => {}, { passive: true });
+    window.addEventListener('touchmove', () => {}, { passive: true });
   </script>
-
 </body>
 </html>
