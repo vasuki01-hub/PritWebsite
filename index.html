@@ -581,6 +581,26 @@
       .layer { padding: 1.2rem; }
       .layer h1 { margin-bottom: 24rem; }
       .layer p { margin-bottom: 0rem; font-size: 0.82rem; }
+      
+    .row {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      aspect-ratio: 1 / 1;
+      transition: transform 2.4s ease;
+    }
+
+    .row img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 2.4s ease;
+      animation: autoZoom 14s ease-in-out infinite alternate;
+    }
+
+    .row:hover img { transform: scale(1.9); animation-play-state: paused; }
+
     }
 
     /* Contact */
@@ -1024,4 +1044,5 @@
   </script>
 </body>
 </html>
+
 
