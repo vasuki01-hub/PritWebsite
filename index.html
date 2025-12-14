@@ -534,7 +534,7 @@
     .layer h2 {
       font-size: clamp(1.3rem, 3rem, 2.2rem);
       font-weight: 550;
-      margin-bottom: 2rem;
+      margin-bottom: 0rem;
       background: linear-gradient(135deg, rgba(0, 0, 0, 0.25) 20%, rgba(0, 0, 0, 0.25) 80%);
       backdrop-filter: blur(10px);
       border-radius: 25px;
@@ -563,11 +563,12 @@
 
     .layer a:hover { color: #fff; transform: scale(1.2); text-shadow: 0 0 15px #07e6da; }
 
+
     @media (max-width: 768px) {
       .portfolio-content { gap: 1rem; }
       .layer { padding: 1.5rem; }
       .layer a { bottom: 1.5rem; right: 1.5rem; font-size: 1.8rem; }
-      .layer h1 { margin-bottom: 14rem; }
+      .layer h1 { margin-bottom: 22rem; }
       .layer p { margin-bottom: 0rem; font-size: 0.81rem; }
     }
 
@@ -576,6 +577,22 @@
       .layer h1 { margin-bottom: 14rem; }
       .layer p { margin-bottom: 0rem; font-size: 0.82rem; }
     }
+
+    /* Desktop */
+@media (min-width: 1024px) { 
+      .portfolio-content { gap: 1rem; }
+      .layer { padding: 1.5rem; }
+      .layer a { bottom: 1.5rem; right: 1.5rem; font-size: 1.8rem; }
+      .layer h1 { margin-bottom: 4rem; }
+      .layer h2 { margin-bottom: 1rem; }
+      .layer p { margin-bottom: 0rem; font-size: 0.7rem; } }
+/* Large desktop */
+@media (min-width: 1280px) or (min-width: 1440px) { 
+      .portfolio-content { gap: 1rem; }
+      .layer { padding: 1.5rem; }
+      .layer a { bottom: 1.5rem; right: 1.5rem; font-size: 1.8rem; }
+      .layer h1 { margin-bottom: 14rem; }
+      .layer p { margin-bottom: 0rem; font-size: 0.81rem; }  }
 
     /* Contact */
     .contact {
@@ -681,18 +698,20 @@
   </div>
 
   <!-- HEADER -->
-  <header class="header">
-    <a href="#" class="logo" aria-label="Home">Portfolio</a>
+<header class="header">
+    <a href="#" class="logo" aria-label="Home">
+      <span>Prit Ghodasara</span> </a>
     <div class="hamburger"><span></span><span></span><span></span></div>
     <nav class="navbar" role="navigation" aria-label="Main navigation">
-      <a href="#" style="--i:1" class="active" aria-current="page">Home</a>
-      <a href="#about" style="--i:2">About</a>
-      <a href="#services" style="--i:3">Services</a>
-      <a href="#skills" style="--i:4">Skills</a>
-      <a href="#portfolio" style="--i:5">Portfolio</a>
-      <a href="#contact" style="--i:6">Contact</a>
+      <a href="#" style="--i:1" class="active" aria-current="page"><i class='bx bx-home-alt'></i> Home</a>
+      <a href="#about" style="--i:2"><i class='bx bx-user'></i> About</a>
+      <a href="#services" style="--i:3"><i class='bx bx-briefcase-alt-2'></i> Services</a>
+      <a href="#skills" style="--i:4"><i class='bx bx-bar-chart-alt-2'></i> Skills</a>
+      <a href="#portfolio" style="--i:5"><i class='bx bx-code-curly'></i> Projects</a>
+      <a href="#contact" style="--i:6"><i class='bx bx-envelope'></i> Contact</a>
     </nav>
   </header>
+
 
   <!-- HOME -->
   <section class="home" id="home">
