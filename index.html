@@ -101,7 +101,7 @@
     p { font-size: 1rem; }
 
     a { text-decoration: none; transition: all .3s ease; }
-    img { max-width: 100%; height: auto; display: block; loading: lazy; }
+    img { max-width: 100%; height: auto; display: block; loading: lazy; decoding: async; }
 
     img.failed {
       background: #333;
@@ -263,6 +263,7 @@
       margin: 1.2rem auto;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       transition: transform 0.8s ease, box-shadow 0.8s ease;
+      will-change: transform;
     }
 
     .profile-photo:hover,
@@ -469,8 +470,7 @@
       animation: fadeIn .5s 1s linear forwards;
     }
 
-    /* Portfolio - Slower & consistent zoom */
-       /* Portfolio */
+    /* Portfolio */
     .portfolio-content {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -569,7 +569,6 @@
       .layer a { bottom: 1.5rem; right: 1.5rem; font-size: 1.8rem; }
       .layer h1 { margin-bottom: 14rem; }
       .layer p { margin-bottom: 0rem; font-size: 0.81rem; }
-   
     }
 
     @media (max-width: 380px) {
@@ -577,9 +576,6 @@
       .layer h1 { margin-bottom: 14rem; }
       .layer p { margin-bottom: 0rem; font-size: 0.82rem; }
     }
-
- 
-
 
     /* Contact */
     .contact {
@@ -678,7 +674,7 @@
 <body>
   <!-- Video Background -->
   <div class="video-background">
-    <video autoplay muted loop playsinline poster="Bg02.jpg">
+    <video autoplay muted loop playsinline poster="Bg02.jpg" preload="metadata">
       <source src="Bg.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
@@ -723,7 +719,7 @@
   <!-- ABOUT -->
   <section class="about" id="about">
     <div class="profile-photo">
-      <img src="PG.jpg" alt="Prit Ghodasara Profile" loading="lazy"
+      <img src="PG.jpg" alt="Prit Ghodasara Profile" loading="lazy" decoding="async"
         onerror="this.classList.add('failed'); this.alt='Profile Image Unavailable - Prit Ghodasara';" />
     </div>
     <div class="about-text">
@@ -856,7 +852,7 @@
       <h2>Latest <span>Project</span></h2>
       <div class="portfolio-content">
         <div class="row">
-          <img src="UI UX.jpg" alt="FitFlow - UI/UX Redesign" loading="fast"
+          <img src="UI UX.jpg" alt="FitFlow - UI/UX Redesign" loading="lazy" decoding="async"
             onerror="this.classList.add('failed'); this.alt='Project Image Unavailable - UI/UX';" />
           <div class="layer">
             <h1>UI/UX Design</h1>
@@ -870,7 +866,7 @@
           </div>
         </div>
         <div class="row">
-          <img src="AppDev.jpg" alt="FitFlow Android App" loading="fast"
+          <img src="AppDev.jpg" alt="FitFlow Android App" loading="lazy" decoding="async"
             onerror="this.classList.add('failed'); this.alt='Project Image Unavailable - Android App';" />
           <div class="layer">
             <h1>Android App</h1>
@@ -884,7 +880,7 @@
           </div>
         </div>
         <div class="row">
-          <img src="Web.jpg" alt="TaskFlow Web App" loading="fast"
+          <img src="Web.jpg" alt="TaskFlow Web App" loading="lazy" decoding="async"
             onerror="this.classList.add('failed'); this.alt='Project Image Unavailable - Web App';" />
           <div class="layer">
             <h1>Web App</h1>
@@ -966,22 +962,23 @@
         });
       }
 
-      const animateSkills = () => {
-        document.querySelectorAll('.Technical-bars .progress-line span').forEach(span => {
-          span.style.width = span.dataset.percent || '90%';
-        });
-      };
-
+      // Improved skill animation trigger (only when in view)
       const skillsObserver = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          animateSkills();
-          skillsObserver.unobserve(document.querySelector('.skills'));
+          document.querySelectorAll('.progress-line span').forEach(span => {
+            span.style.transform = 'scaleX(1)';
+          });
+          document.querySelectorAll('.path').forEach(path => {
+            path.style.animationPlayState = 'running';
+          });
+          document.querySelectorAll('.radial-bar .percentage, .radial-bar .text, .progress-line span::after, .progress-line span::before').forEach(el => {
+            el.style.opacity = '1';
+          });
         }
       }, { threshold: 0.3 });
 
       const skillsSection = document.querySelector('.skills');
       if (skillsSection) skillsObserver.observe(skillsSection);
-      setTimeout(animateSkills, 2500);
     });
   </script>
 </body>
